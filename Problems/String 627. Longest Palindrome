@@ -1,0 +1,36 @@
+public class Solution {
+    /**
+     * pro:给一串字符求最长构造的回文串长度
+     * tag： string，Palindrome
+     * solution：用数组hashmap收集字符出线数，累加偶数的
+     * mistake：总数忘记加上1，因为中间可以有个单个数。3没有加
+     */
+    public int longestPalindrome(String s) {
+        // write your code here
+        if (s == null){
+            return 0;
+        }
+        // array as hash map
+        int[] array = new int[256];
+        // even number + 1 or not
+        boolean has_single = false;
+        int len = 0;
+        for (int i = 0; i < s.length(); i++){
+            array[s.charAt(i)]++;
+        }
+        for (int i = 0; i < array.length; i++){
+            if (array[i] % 2 == 0){
+                len += array[i];
+            } else {
+                // 3, odd number needs to be add too
+                len += array[i] - 1;
+                has_single = true;
+            }
+        }
+        if (has_single){
+            len++;
+        }
+        
+        return len;
+    }
+}
