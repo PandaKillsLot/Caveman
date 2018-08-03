@@ -7,7 +7,7 @@ algs tree : algs & data structrue
 
 others
 
-### standard code annotation
+## standard code annotation
 intro
 tag
 solution & analysis
