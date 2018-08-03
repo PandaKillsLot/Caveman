@@ -1,0 +1,45 @@
+public class Solution {
+    /**
+     * pro：校验回文串
+     * tag： string， palindrome， two pointer
+     * solution： 双指针前后扫，不是char就继续，是char就判断。
+     * 经典的，双指针验证回文串。同时用到了，Character.toLowerCase
+     * Character.isLetter(c) || Character.isDigit(c);
+     * 
+     * mistake：看清是alphanumeric还是纯alpha
+     */
+    public boolean isPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
+        }
+
+        int front = 0;
+        int end = s.length() - 1;
+        while (front < end) {
+            while (front < s.length() && !isvalid(s.charAt(front))){ // nead to check range of a/b
+                front++;
+            }
+
+            if (front == s.length()) { // for empty string “.,,,”     
+                return true; 
+            }           
+
+            while (end >= 0 && ! isvalid(s.charAt(end))) { // same here, need to check border of a,b
+                end--;
+            }
+
+            if (Character.toLowerCase(s.charAt(front)) != Character.toLowerCase(s.charAt(end))) {
+                break;
+            } else {
+                front++;
+                end--;
+            }
+        }
+        // 如果没有全部检查完就代表不是pali，这个写法很优雅
+        return end <= front; 
+    }
+
+    private boolean isvalid (char c) {
+        return Character.isLetter(c) || Character.isDigit(c);
+    }
+}
