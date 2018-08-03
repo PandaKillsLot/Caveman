@@ -1,7 +1,8 @@
 /**
  * pro:求最长回文子串
  * tag: string, Palindrome
- * sol: 遍历 i，和两种Palindrome， 以i为中心，以i, i + 1为中心
+ * sol: 遍历 i，和两种Palindrome， 以i为中心，以i, i + 1为中心 
+        S: O(1) T:O(n^2)
  * mis: 
  * follow: 求最长回文子串，不需要连续
 */
