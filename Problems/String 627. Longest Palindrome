@@ -1,5 +1,6 @@
 public class Solution {
     /**
+     * https://www.lintcode.com/problem/longest-palindrome/description
      * pro:给一串字符求最长构造的回文串长度
      * tag： string，Palindrome
      * solution：用数组hashmap收集字符出线数，累加偶数的
