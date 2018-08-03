@@ -1,0 +1,89 @@
+public class Solution {
+    /*
+     * https://www.lintcode.com/problem/strstr-ii/description
+     */
+     /*
+     rabin-karp
+     通过计算substring和target的hashcode来把匹配时间转化成O(1)
+     
+     hashcode 的计算;
+     magic number 不断乘以质数来离散
+     a * 31 ^ 3 + b * 31 ^ 2 + c * 31 ^ 1 + e * 31 ^ 0
+     base 确保 hashcode不溢出，不是负的     
+     
+     每次像滑动窗口一样，计算当前子串的长度，然后pop出头，加入尾巴
+     
+     记得最后还要算hashcode相同的情况，真实的字符串是不是相同
+     */
+    int magic = 33;
+    int base = 10000000;
+    int len = 0;
+    public int strStr2(String source, String target) {
+        // write your code here
+        if (source == null || target == null){
+            return -1;
+        }
+        int len = target.length();
+        if (len == 0){
+            return 0;
+        }
+        if (source.length() == 0 || source.length() < len){
+            return -1;
+        }
+        int hashTarget = hashCode(target);
+        int hashSource = hashCode(source.substring(0, len));
+        int hashpower = 1;
+        int n = len;
+        while(n > 1){
+            hashpower = hashpower * magic % base;
+            n--;
+        }
+        if (hashTarget == hashSource && check(target, source, 0)){
+            System.out.println("?");
+            return 0;
+        }
+        for (int i = 0; i < source.length() - len; i++){
+            // abc - a
+            hashSource = hashSource - source.charAt(i) * hashpower % base;
+            if (hashSource < 0){
+                hashSource += base;
+            }
+            // bc + d
+            hashSource = (hashSource * magic + source.charAt(i + len)) % base;
+             if (hashSource == hashTarget){
+                  System.out.println("???");
+             }
+            if (hashSource == hashTarget && check(target, source, i + 1)){
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+    private int hashCode(String str){
+        int code = 0;
+        for (int i = 0; i < str.length(); i++){
+            code = (code * magic + str.charAt(i)) % base;
+        }
+        return code;
+    }
+    private boolean check(String target, String source, int pos){
+        for (int i = 0; i < target.length(); i++){
+            if (target.charAt(i) != source.charAt(i + pos)){
+                return false;
+            }
+        }
+        return true;
+    }
+        
+}
+
+
+
+
+
+
+
+
+
+
+
