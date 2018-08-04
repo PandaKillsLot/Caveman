@@ -44,3 +44,58 @@ public class Solution {
         return len;
     }
 }
+// ************************************************          DP VERSION     ****************************************
+// ************************************************          DP VERSION     ****************************************
+public class Solution {
+    /**
+     * pro:返回字符串里最长回文串
+     * tag:dp，String
+     * solution:dp
+     *  status：dp[i][j] 字符串 ij之间是不是
+     *  equation：dp[i][i] true, dp[i][i + 1]看 i和i+1的字符是不是一样，dp[i][i + n]看两段字符和中间dp[i + 1][j - 1]
+     * initiate:dp[i][i], 注意，根据递推关系，会发现i行牵涉到i- 1行
+     * answer： 遍历比较最大的
+     * mistake:
+     * follow up: the longest palindromic sequence不连续 || O(n) manacher解决
+     * @param s: input string
+     * @return: the longest palindromic substring
+     */
+    public String longestPalindrome(String s) {
+        // write your code here
+        char[] array = s.toCharArray();
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        int left = 0;
+        int right = s.length() - 1;
+        int max = 0;
+        for (int i = s.length() - 1; i >= 0; i--){
+            for (int j = i; j < s.length(); j++){
+                
+                if (i == j){
+                    dp[i][j] = true;
+                } else if (i == j - 1){
+                    dp[i][j] = array[i] == array[j];
+                } else if (i < j - 1){
+                    
+                    dp[i][j] = (array[i] == array[j]) && dp[i + 1][j - 1];
+                }
+                if (dp[i][j] && j - i > max){
+                    max = j - i;
+                    left = i;
+                    right = j;
+                }
+            }  
+        }
+        
+        return s.substring(left, right + 1);
+        
+    }
+}
+
+
+
+
+
+
+
+
