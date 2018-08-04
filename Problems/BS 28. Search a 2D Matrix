@@ -1,0 +1,48 @@
+public class Solution {
+    /**
+     * pro:二维矩阵找值，每行和上一行严格递增
+     * tag:二分，变种二分
+     * sol: 
+     * 做法一，二维矩阵一维化 position = x * col + y，time: log(n+m),space: 1
+     * 做法二，O（m + n）利用行递增和列递增，就地二分，从右下角或者左上角开始，比t小就删除列，
+     * 比t大就删除行（右下角开始，pos是当前行最小，列最大）。每次可以删掉一行或者一列。
+     * 为什么从右下角或者左上角开始呢，因为在 1和9的位置，数列是从两个方向递增的。假设T是3，你要两个方向遍历O(n)才行
+     * 
+     * 123
+     * 456
+     * 789
+     * 
+     * mis:没考虑 len = 0
+     * follow up： 行之间不是严格递增
+     * https://www.lintcode.com/problem/search-a-2d-matrix/description
+     * @param matrix: matrix, a list of lists of integers
+     * @param target: An integer
+     * @return: a boolean, indicate whether matrix contains target
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // write your code here
+        if (matrix == null){
+            return false;
+        }
+        int row = matrix.length;
+        if (row == 0){
+            return false;
+        }
+        int col = matrix[0].length;
+
+        int x = 0;
+        int y = col - 1;
+        
+        while (x < row && y >= 0 ){
+            if (matrix[x][y] == target){
+                return true;
+            } else if (matrix[x][y] < target){
+                x++;
+            } else {
+                y--;
+            }
+        }
+        
+        return false;
+    }
+}
