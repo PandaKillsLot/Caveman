@@ -1,0 +1,41 @@
+class Solution {
+    /**
+    *pro：给一个String，数字可以代替任何字母，求所有组合（两个数字不能连在一起，word不能 w11d）
+    *tag: dfs, combination
+    *solution：枚举每一个开始，枚举每一个开始后的每一个可能变化
+              word
+    start： 0 1 2 3
+          0-0 0-1 0-2 0-3
+    *mistake:一旦一个数字之后下一位才是能变，1ord,要从r开始，这时的position不是word的i+ 1,而是temp尾巴的第一个
+    *follow up:
+    *link:https://leetcode.com/problems/generalized-abbreviation/description/
+    */
+    public List<String> generateAbbreviations(String word) {
+        List<String> ans = new ArrayList<String>();
+        ans.add(word);
+        if (word == null || word.length() == 0){
+            return ans;
+        }
+        helper(word, 0,ans);
+        return ans;
+    }
+    // add all results into ans
+    private void helper(String word, int pos, List<String> ans){
+        if (pos >= word.length()){
+            return;
+        }
+        // change from char at pos to last
+        // i is start, j is tail
+        for (int i = pos; i < word.length(); i++){
+            for (int j = i + 1; j <= word.length(); j++){
+                String head = word.substring(0, i);
+                
+                    String body = String.valueOf(j - i);
+                    String tail = j < word.length() ? word.substring(j, word.length()) : "";
+                    String temp = head + body + tail;
+                    ans.add(temp);
+                    helper(temp, temp.length() - tail.length() + 1, ans);                
+            }
+        }
+    }
+}
