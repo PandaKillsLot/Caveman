@@ -1,0 +1,42 @@
+public class Solution {
+    /**
+     * pro:求快速幂
+     * tag:分治，二分
+     * solu:a ^ 2 = a * a, 注意n是奇数的情况
+     * mis:到底是停在0还是1
+     * follow: 算余数
+     * @param x: the base number
+     * @param n: the power number
+     * @return: the result
+     */
+     
+    public double myPow(double x, int n) {
+        
+        return n < 0 ? 1 / helper(x, n) : helper(x, n);
+        
+    }
+    public double helper(double x, int n) {
+        if (n == 0){
+            return 1;
+        }
+        
+        double temp = helper(x, n / 2);
+        if (n % 2 == 0){
+            return temp * temp;
+        } else {
+            return temp * temp * x;
+        }
+    }
+}
+// 非递归
+int power(int x, int n) {
+    int ans = 1, base = x;
+    while (n != 0) {
+        if (n % 2 == 1) {
+            ans *= base;
+        }
+        base *= base;
+        n = n / 2;
+    }
+    return ans;
+}
