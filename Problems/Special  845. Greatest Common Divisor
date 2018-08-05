@@ -6,6 +6,7 @@ public class Solution {
      * mis: 
      * follow: 
      * https://www.lintcode.com/problem/greatest-common-divisor/description
+      参考： http://www.sohu.com/a/231586600_99902636
      * @param a: the given number
      * @param b: another number
      * @return: the greatest common divisor of two numbers
