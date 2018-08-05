@@ -3,7 +3,7 @@ public class Solution {
      * pro:求快速幂
      * tag:分治，二分
      * solu:a ^ 2 = a * a, 注意n是奇数的情况
-     * mis:到底是停在0还是1
+     * mis:到底是停在0还是1, 0 ! n could < 0
      * follow: 算余数
      * @param x: the base number
      * @param n: the power number
