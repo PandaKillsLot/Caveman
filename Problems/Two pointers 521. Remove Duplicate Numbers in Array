@@ -1,0 +1,48 @@
+public class Solution {
+    /**
+     * 521. Remove Duplicate Numbers in Array
+     * https://www.lintcode.com/problem/remove-duplicate-numbers-in-array/description
+     * pro: 数组原地去重，不重复的数放前面
+     * tag：双指针
+     * solution：
+     *         1.用个hashset，一个指针指向前面不重复的区域，一个指针遍历，遇到不重复的就swap。T O(N) S O(N)
+     *         2.用数组排序代替 hashset。是不是重复只看是不是和当前不重复区域第一个相同，不同就加进来
+     *           利用有序确保不重复，在做排列组合的问题里经常遇到
+     * mis：想着一前一后两个指针，后面的数被换上来，直接一波打乱顺序，不知道本身是不是重复。
+     * @param nums: an array of integers
+     * @return: the number of unique integers
+     * @ t1 3/ 25
+     * @ 双指针: 一个记录当前，一个记录unique的到哪里
+     *  一个HashSet记录是否遇到过
+     */
+    public int deduplication(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        if (nums.length == 1) {
+            return 1;
+        }
+        Arrays.sort(nums);
+        int start = 0;
+        int end = 0;
+        
+        while (end < nums.length){
+            if (nums[end] != nums[start]){
+                swap(nums, start + 1, end);
+                start++;
+            }
+            end++;
+        }
+        return ++start;
+    }
+    private void swap(int[] nums, int left, int right) {
+        if (left == right){
+            return;
+        }
+        int temp = nums[left];
+        nums[left] = nums [right];
+        nums [right] = temp;
+    }
+    
+}
