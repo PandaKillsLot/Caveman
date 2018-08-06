@@ -1,0 +1,38 @@
+public class Solution {
+    /**891. Valid Palindrome II
+     * https://www.lintcode.com/problem/valid-palindrome-ii/description
+     * 
+     * pro：问一个字符串删除了一个字母能不能成为panli
+     * tag：two pointer
+     * solu： 这题的关键在于，无论删哪个，A[0] == A[A.length() - 1]
+     *        所以遇到不相等的，直接删除一个继续看就好
+     * mis：注意代码的函数封装
+     * 
+     * @param s: a string
+     * @return: nothing
+     */
+    public boolean validPalindrome(String s) {
+        // Write your code here
+        if (s == null){
+            return false;
+        }
+        return helper(s, false);
+    }
+    private boolean helper(String s, boolean deleted){
+        int start = 0;
+        int end = s.length() - 1;
+        
+        while (start < end){
+            if (s.charAt(start) != s.charAt(end)){
+                if (deleted){
+                    return false;
+                } else {
+                    return helper(s.substring(start, end), true) || helper(s.substring(start + 1, end + 1), true);
+                }
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+}
