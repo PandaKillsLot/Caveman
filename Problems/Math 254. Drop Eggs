@@ -1,0 +1,40 @@
+// public class Solution {
+//     /**
+//      * @param n: An integer
+//      * @return: The sum of a and b
+//      */
+//     public int dropEggs(int n) {
+//         // write your code here
+//         int i = 0;
+//         while (i < n && sum(i) < n ){
+//             i++;
+//         }
+//         return i;
+//     }
+//     private long sum(int i){
+//         return (1 + i) * (i)  / 2;
+//     }
+// }
+
+public class Solution {
+    /**
+     * pro:两个鸡蛋，测n层楼，到底哪一层会破
+     * tag： 数学，二分
+     * solu： 假设 100 层楼，每次a蛋每次隔10楼，然后b蛋从破的地方扔，最多扔19次，最少扔
+     * 1次。那么如果能让最坏case和最好case一样就好了。用先前的方法，第一次最坏 10，然后11，然后。。19
+     * 也就是time递增，如果每次一样，那就 X + x-1 + x-2 + 1  >= 100
+     * 二分找数
+     * mis：？溢出？
+     * @param n an integer
+     * @return an integer
+     */
+    public int dropEggs(int n) {
+        // Write your code here
+        long ans = 0;
+        for (int i = 1; ; ++i) {
+            ans += (long)i;
+            if (ans >= (long)n)
+                return i;
+        }
+    }
+}
