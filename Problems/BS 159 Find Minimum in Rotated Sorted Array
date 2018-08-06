@@ -1,0 +1,36 @@
+public class Solution {
+     /**
+     * Find Minimum in Rotated Sorted Array
+     * https://www.lintcode.com/problem/find-minimum-in-rotated-sorted-array/description
+     * pro:Find Minimum in Rotated Sorted Array
+     * tag: bs
+     * sol: bs，有序数组rotate以后，还是一个局部有序的数组。每次还是可以根据mid的值和last比较来扔掉一半。
+     * eg： 456 1234
+     * 如果比last大，说明在前面，舍掉自己跟前面的；如果小，就舍掉后面的，一直向min逼近。
+     * mis：和first比较， 1234567, 因为你找的是递减那一段的min，所以一定要和递减那一段的最后比。
+     * follow ：62. Search in Rotated Sorted Array 
+     * @param nums: a rotated sorted array
+     * @return: the minimum number in the array
+     */
+    public int findMin(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0){
+            return 0;
+        }
+        int start = 0;
+        int end = nums.length - 1;
+        int last = nums[end];
+        
+        while (start + 1 < end){
+            int mid = start + (end - start) / 2;
+            
+            if (nums[mid] <= last){
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+        
+        return Math.min(nums[start], nums[end]);
+    }
+}
