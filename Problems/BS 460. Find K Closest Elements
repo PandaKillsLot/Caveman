@@ -1,0 +1,85 @@
+public class Solution {
+    /**
+     * 460. Find K Closest Elements
+     * https://www.lintcode.com/problem/find-k-closest-elements/description
+     * pro；
+     * tag:bs, two pointers
+     * solu：bs, two pointers。注意定义你一开始bs返回的是第一个比原来值小的，还是大的
+     * 注意函数功能分离：二分，双指针，左右比大小
+     * 
+     * 
+     * @param A: an integer array
+     * @param target: An integer
+     * @param k: An integer
+     * @return: an integer array
+     * 双指针 x 数组merge
+     * 合并的条件判断独立成函数，很优雅
+     */
+    int start = 0;
+    int end = 0;
+    public int[] kClosestNumbers(int[] A, int target, int k) {
+        // write your code here
+        int[] ans = new int[k];
+        
+        if (A == null || A.length == 0){
+            return ans;
+        }
+        int pivot = findTarget(A, target);
+        
+        if (pivot != -1) {
+            this.start = pivot;
+            this.end = pivot + 1;
+        }
+        
+        for (int i = 0; i < k ; i++) {
+            if (isLeftCloser(A, target)) {
+                ans[i] = A[this.start--]; 
+            } else {
+                ans[i] = A[this.end++]; 
+            }
+        }
+        return ans;
+    }
+    
+    private boolean isLeftCloser(int[] A, int target){
+        // 经典的数组merge
+        if (this.end >= A.length) {
+            return true;
+        }
+        if (this.start < 0) {
+            return false;
+        }
+        if (Math.abs(A[this.start] - target) <= Math.abs(A[this.end] - target)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private int findTarget(int[] A, int target){
+        int head = 0;
+        int tail = A.length - 1;
+        
+        while (head + 1 < tail) {
+            int mid = head + (tail - head) / 2;
+            
+            if (A[mid] == target) {
+                return mid;
+            } else if (A[mid] < target) {
+                head = mid;
+            } else {
+                tail = mid;
+            }
+        }
+        if (A[head] == target) {
+            return head;
+        } else if (A[tail] == target) {
+            return tail;
+        }
+        
+        this.start = head;
+        this.end = tail;
+        
+        return -1;
+    }
+}
