@@ -1,0 +1,68 @@
+public class Solution {
+    /**
+     * 61. Search for a Range
+     * https://www.lintcode.com/problem/search-for-a-range/description
+     * pro： 找target的开始和结束为止
+     * tag：二分
+     * sol: 两次二分
+     * mis：注意越界
+     *@param A : an integer sorted array
+     *@param target :  an integer to be inserted
+     *return : a list of length 2, [index1, index2]
+     * t1-1
+     * 找范围 = 第一个比他小的和第一个比他大的
+     * 这里是，第一个出现的和最后一个出现的
+     */
+    public int[] searchRange(int[] A, int target) {
+        // write your code here
+        int [] result = {-1, -1};
+        int fstIndex = 0;
+        int lstIndex = 0;
+        if (A.length < 1) {
+            return result;
+        }
+        //find the first index
+        int start = 0;
+        int end = A.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (A[mid] == target) {
+                end = mid;
+            } else if (A[mid] < target) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (A[start] == target)  {
+            fstIndex = start;
+        } else if (A[end] == target) {
+            fstIndex = end;
+        } else {
+            return result;
+        }
+        //find the last index
+        start = 0;
+        end = A.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (A[mid] == target) {
+                start = mid;
+            } else if (A[mid] < target) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (A[end] == target)  {
+            lstIndex = end;
+        } else if (A[start] == target) {
+            lstIndex = start;
+        } else {
+            return result;
+        }
+        result[0] = fstIndex;
+        result[1] = lstIndex;
+        return result;
+    }
+}
