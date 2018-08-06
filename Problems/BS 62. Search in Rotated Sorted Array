@@ -1,0 +1,76 @@
+public class Solution {
+    /**
+     * 62. Search in Rotated Sorted Array
+     * https://www.lintcode.com/problem/search-in-rotated-sorted-array/description
+     * 
+     * pro： 旋转有序数组找target
+     * tag：二分
+     *  /  |
+     * /   |
+     * ---------
+     *     | /
+     *     |/
+     * solu：二分，核心是这个数组依然局部有序，所以可以根据A[0]A[last]来判断每次去掉哪里
+     *  去掉哪里，怎么去，核心是知道自己处于哪一段一段
+     *  1) 先找min二分找到min了天下太平
+     *  2) 一个二分解决，t和mid和s有6种关系
+     *  T > S
+     *  s < mid < t       start = mid
+     *  s < t < mid       end = mid
+     *  mid < s           end = mid
+     * 
+     *  T < S 
+     *  mid > t > e     start = mid
+     *  t < mid < e     end = mid
+     *  mid < t         start = mid
+     * 
+     * 
+     * @param A: an integer rotated sorted array
+     * @param target: an integer to be searched
+     * @return: an integer
+     */
+    public int search(int[] A, int target) {
+        // write your code here
+        if (A == null || A.length == 0){
+            return -1;
+        }
+        int s = A[0];
+        int e = A[A.length - 1];
+        
+        int start = 0;
+        int end = A.length - 1;
+        
+        while (start + 1 < end){
+            int mid = start + (end - start) / 2;
+            // System.out.println("mid " + mid);
+            // System.out.println("A[mid] " + A[mid]);
+            // System.out.println("start " + start);
+            // System.out.println("end " + end);
+            if (target > e){
+                if (A[mid] > s && A[mid] < target){
+                    start = mid;
+                } else if (A[mid] == target){
+                    return mid;
+                }else {
+                    end = mid;
+                }
+            } else{
+                if (A[mid] > e || A[mid] < target){
+                    start = mid;
+                }else if (A[mid] == target){ 
+                    return mid;
+                } else {
+                    end = mid;
+                }
+            }
+        }
+       
+        if(A[start] == target){
+            return start;
+        }
+         if(A[end] == target){
+            return end;
+        }
+        return -1;
+    }
+}
