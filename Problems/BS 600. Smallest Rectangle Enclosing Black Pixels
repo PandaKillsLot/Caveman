@@ -1,0 +1,98 @@
+public class Solution {
+    /**
+     * 600. Smallest Rectangle Enclosing Black Pixels
+     * https://www.lintcode.com/problem/smallest-rectangle-enclosing-black-pixels/description
+     * pro: 矩阵中央有一团不规则黑点，告诉你一个已知的黑点，求能包围全部黑点的最小矩形面积
+     * tag：二分
+     * solu：已知点和边界之间做二分，找上下左右边界，每次花O(N)验证， nlogn
+     * mis：具体数值的加一减一
+     * follow：
+     * @param image: a binary matrix with '0' and '1'
+     * @param x: the location of one of the black pixels
+     * @param y: the location of one of the black pixels
+     * @return: an integer
+     */
+     
+     // brute force
+    public int minArea(char[][] image, int x, int y) {
+        // classic mistake
+        // int x_left = binarySearch(image, 0, y, 1, -1);
+        // int x_right = binarySearch(image, y, image[0].length - 1, 1, 1);
+        // int y_top = binarySearch(image, 0, x, 0, -1);
+        // int y_bottom = binarySearch(image, x, image.length - 1, 0, 1);
+        
+        System.out.println("find lower x ");
+        int x_top = binarySearch(image, 0, x, 0, -1);
+        int x_bottom = binarySearch(image, x, image.length - 1, 0, 1);
+        System.out.println("find lower y ");
+        int y_left = binarySearch(image, 0, y, 1, -1);
+        int y_right = binarySearch(image, y, image[0].length - 1, 1, 1);
+        
+        System.out.println(x_top);
+        System.out.println(x_bottom);
+        System.out.println(y_left);
+        System.out.println(y_right);
+        
+        return (x_bottom - x_top + 1) * ( y_right - y_left + 1);
+    }
+    private int binarySearch(char[][] image, int head, int tail, int axis, int direction){
+        int start = head;
+        int end = tail;
+        // find upper bound
+        if (direction > 0){
+            // exo me?? while (start + 1 < head) {
+            while (start + 1 < end) {
+                int mid = start + (end - start) / 2;
+                if (check (image, mid, axis)) {
+                    start = mid;
+                } else{
+                    end = mid;
+                }
+            }
+            
+            if (check (image, end, axis)) {
+                return end;
+            } else {
+                return start;
+            }
+      
+        } else {
+            // find lower bound
+            
+            while (start + 1 < end) {
+                int mid = start + (end - start) / 2;
+                if (check (image, mid, axis)) {
+                   
+                    end = mid;
+                } else{
+                     
+                    start = mid;
+                }
+            }
+          
+            if (check (image, start, axis)) {
+                return start;
+            } else {
+                return end;
+            }
+        }
+        
+    }
+    private boolean check (char[][] image, int pos, int axis) {
+        if (axis == 0) {
+            for (int i = 0; i < image[0].length; i++) {
+                if (image[pos][i] == '1') {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < image.length; i++) {
+                if (image[i][pos] == '1') {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+}
