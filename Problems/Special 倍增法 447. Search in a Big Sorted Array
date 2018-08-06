@@ -5,6 +5,7 @@ public class Solution {
      * pro： 无线大数组找数
      * tag： bs， 倍增
      * solu：倍增找上界，bs找数 log target + log (upper - lower)
+     * mis：从零开始
      * follow：
      * 
      * @param reader: An instance of ArrayReader.
