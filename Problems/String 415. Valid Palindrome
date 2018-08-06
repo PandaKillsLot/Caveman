@@ -7,6 +7,7 @@ public class Solution {
      * Character.isLetter(c) || Character.isDigit(c);
      * 
      * mistake：看清是alphanumeric还是纯alpha
+     * follow: 891. Valid Palindrome II 可以删除一个数
      */
     public boolean isPalindrome(String s) {
         if (s == null || s.length() == 0) {
