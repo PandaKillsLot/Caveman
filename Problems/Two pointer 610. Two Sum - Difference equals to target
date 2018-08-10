@@ -5,6 +5,7 @@ public class Solution {
      * solu: 
      *      1.一波hash。和 two sum一样，
      *      2. 通向双指针，这题目虽然跑不过testcase，但是暴露出的通向双指针问题很经典
+     (sort is not allowed, thought you could make a class or use a hashmap)
      *        i. 无论是同向双指针，还是逆向，还是二分（变向双指针）。其实核心都是宽紧带。
      *           就是一旦扫描过了，就坚决不回头，只紧不松。这题一开始想small--其实是不该出现的
      *        ii. 通向双指针的相遇一直是个问题，
