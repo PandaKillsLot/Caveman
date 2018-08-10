@@ -1,0 +1,62 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;      
+ *     }
+ * }
+ */
+
+
+public class Solution {
+    /**
+     * 380. Intersection of Two Linked Lists
+     * https://www.lintcode.com/problem/intersection-of-two-linked-lists/description
+     * pro: 两交叉链表求交点
+     * tag： two pointer
+     * sol： 链表（node）题目大奥义，先看有没有father指针
+     *       连起来，然后就成了带环链表求环
+     * mis：？
+     * follow：
+     * @param head: The first node of linked list.
+     * @return: True if it has a cycle, or false
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        // write your code here
+        if (headA == null || headB == null) {
+            return null;
+        }
+        // attach
+        ListNode pointer = headB;
+        // 注意刹车位置
+        while (pointer.next != null) {
+            pointer = pointer.next;
+        }
+        pointer.next = headB;
+        
+        ListNode slow_pointer = headA;
+        ListNode fast_pointer = headA.next;
+        
+        while (slow_pointer.next != null
+            && fast_pointer.next != null
+            && fast_pointer.next.next != null
+            && slow_pointer != fast_pointer) {
+            slow_pointer = slow_pointer.next;
+            fast_pointer = fast_pointer.next.next;
+        }
+        slow_pointer = headA;
+        fast_pointer = fast_pointer.next;
+        // ?
+        //fast_pointer = fast_pointer.next;
+        while (slow_pointer.next != null
+            && fast_pointer.next != null
+            && slow_pointer != fast_pointer) {
+            slow_pointer = slow_pointer.next;
+            fast_pointer = fast_pointer.next;
+        }
+        return slow_pointer;
+    }
+}
