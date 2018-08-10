@@ -1,0 +1,64 @@
+public class Solution {
+    /**610. Two Sum - Difference equals to target
+     * pro: 求两数差
+     * tag： two pointer， hash
+     * solu: 
+     *      1.一波hash。和 two sum一样，
+     *      2. 通向双指针，这题目虽然跑不过testcase，但是暴露出的通向双指针问题很经典
+     *        i. 无论是同向双指针，还是逆向，还是二分（变向双指针）。其实核心都是宽紧带。
+     *           就是一旦扫描过了，就坚决不回头，只紧不松。这题一开始想small--其实是不该出现的
+     *        ii. 通向双指针的相遇一直是个问题，
+     *          
+     * @param nums: an array of Integer
+     * @param target: an integer
+     * @return: [index1 + 1, index2 + 1] (index1 < index2)
+     * t1 - 1
+     * hashmap万能大法
+     */
+    // mis : 考虑负数
+    public int[] twoSum7(int[] nums, int target) {
+        // write your code here
+        int[] ans = {-1, -1};
+        
+        if (nums == null || nums.length == 0 || nums.length == 1) {
+            return ans;
+        }
+        Arrays.sort(nums);
+        target = target < 0 ? -target : target;
+        int small = 0;
+        int big = 1;
+        //  mistake no 回头
+        while (small < big && big < nums.length){
+            if(nums[big] - nums[small] == target){
+               ans[0] = ++small;
+               ans[1] = ++big;
+               break;
+            } else if (nums[big] - nums[small] < target){
+                big++;
+            } else {
+                small++;
+                if (small == big){
+                    big++;
+                }
+            }
+        }
+        
+        return ans;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
