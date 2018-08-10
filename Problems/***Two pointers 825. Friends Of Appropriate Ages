@@ -1,0 +1,107 @@
+class Solution {
+    /**
+    *825. Friends Of Appropriate Ages
+    *https://leetcode.com/problems/friends-of-appropriate-ages/description/
+    *pro: fb上年纪相差在一定范围的人互相request，问有几个request，同龄人相互request，不是同龄人单项request
+    *tag： two pointer， sliding windows
+    *sol：排序后双指针（避免重复计算）
+    *排序用到了桶排序，当index已知范围的时候，就可以直接桶排序
+    *滑动窗口可能j和i反向向错，要么在写while的时候一次性解决，要么后面手动调整
+    * 滑动窗口，尽量i一起算，这样i才能在这一层出
+    * mis： 题意理解不够，同龄人是相互双向request的
+    *
+    */
+    // improved version
+    public int numFriendRequests(int[] ages) {
+        int count = 0;
+        if (ages == null || ages.length == 1){
+            return count;
+        }
+        // key point 1
+        // bucket sort -->O(n) sort solution
+        // index -> Key
+        // array[index] -> value
+        int[] age = new int[121];
+        for (int i = ages.length - 1; i >= 0; i--){
+            age[ages[i]]++;
+        }
+        // key point 2: automated two pointer
+        // int j = age.length - 2; will not work
+        int j = age.length - 1;
+        int range_count = 0;
+        // 14 时 2b = b + 14
+        for (int i = age.length - 1; i >= 15; i--){
+            // 因为i== j是valid的，所以while会让j自动多滑动一位
+            while (j > 1 && isValid(i, j) || j> 0 && age[j] == 0){
+                if (age[j] != 0 && isValid(i, j)){
+                     range_count += age[j];
+                }
+                j--;
+            }
+            // i 和后面的一起算
+            count += (range_count - 1) * age[i];
+            
+            range_count = range_count - age[i];
+        }
+        return count;
+    }
+    private boolean isValid(int a, int b){
+        return b != 0 && 2 * b > a  + 14;
+    }
+}
+
+// original version
+class Solution {
+    public int numFriendRequests(int[] ages) {
+        int count = 0;
+        if (ages == null || ages.length == 1){
+            return count;
+        }
+        int[] age = new int[121];
+        for (int i = ages.length - 1; i >= 0; i--){
+            age[ages[i]]++;
+        }
+        // 需要手动调节j指针的双指针
+        int j = age.length - 2;
+        int range_count = 0;
+        for (int i = age.length - 1; i >= 15; i--){
+            if (age[i] == 0){
+                continue;
+            }
+            // 针对于int j = age.length - 2
+            if (i >= 1 && j >= i){
+                j = i - 1;
+            }
+            //out
+            if (range_count > 0 ){
+                // 因为 i点的值和后面的分开算，所以其实每次出去的是age[i - 1]的值，age[] 数组本身不是连续的，age[i - 1]可能是0
+                // 所以只能在下一轮出
+                range_count = range_count - age[i];
+            }
+            // 是0 和valid的时候都继续扩展
+            while (j > 1 && isValid(i, j) || j> 0 && age[j] == 0){
+                if (age[j] != 0 && isValid(i, j)){
+                     range_count += age[j];
+                }
+                j--;
+            }
+            // i 的值和后面的值分开计算
+            int same = age[i] > 1 ? age[i] : 0;
+            int temp = (range_count) * age[i];
+            count += temp + tail(same);
+          
+            
+        }
+        return count;
+    }
+    private boolean isValid(int a, int b){
+       
+        return b != 0 && 2 * b > a  + 14;
+    }
+    private int tail(int n){
+        
+        return n *(n - 1);
+    }
+}
+
+
