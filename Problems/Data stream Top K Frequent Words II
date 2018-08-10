@@ -1,0 +1,88 @@
+/**
+     * Top K Frequent Words II
+     * https://www.lintcode.com/problem/top-k-frequent-words-ii/description
+     * pro: 求数据流里最大的前K个单词频率
+     * tag： data stream, treeset
+     * sol： 核心：1.这题放入pq或者说候选区的东西，会变动的。有两种思路，一个是每次要数据了，遍历排序。每次开销是nlogn。另外一个是pq（实时排序），就需要把东西拿出来，再放进去，但是pq的查找是O(n),
+     *      一个节点只知道自己下面最大/小是哪个，不知道自己顺序。所以要用到treeset。
+     *     https://www.cnblogs.com/lighten/p/7411935.html
+     *     简单来说，hashset的实现，是hash函数 + 数组 + linkedlist。核心比较是不是相同是看
+     *     hashcode。而treeset的实现，是comparator + b-bst 平衡二叉树。核心比较看你改写的comparator。
+     *  （题外话， equals是看本身的地址是不是相等，String类是改写了equals的）
+     *   另外，String 自带 compareTo方法，str1.compareTo(str2)
+     *  https://www.cnblogs.com/1020182600HENG/p/5864269.html
+     *   Compare to 非常的骚
+     *   str1 和 str2 长度不同，返回 str1.length() - str2.length()
+     *   长度相同，是str1和str2第一个不同的char的ACSIIS 减 str2相应位置的char
+     *   2.iterator
+     * mis:经典mistake！ 
+     *     1.treemap的数比较，不可以调用自己的
+     *     2. integer 大于 -127 - 128 就缓存成int了，== 会报错，要先存成int
+     *     3. treeset基于红黑树，也就是BST，所以你aw， fb 在加fb， contains方法，是不会让两个
+     *        fb见面的，fb > aw, 往右边去了。要在改变freq前拿出来，然后加了freq再加进去
+     *     4.string的compare是反的。。。
+    * @param k: An integer
+    */
+public class TopK {
+    int size;
+    HashMap<String, Integer> map;
+    TreeSet<String> seen;
+    public TopK(int k) {
+        // do intialization if necessary
+        size = k;
+        seen = new TreeSet<String>(new Comparator<String>(){
+            @Override
+            public int compare(String str1, String str2){
+                if (str1.equals(str2)){
+                    return 0;
+                }
+                if (map.get(str1) != map.get(str2)){
+                    return map.get(str1) - map.get(str2);
+                } else {
+                    return str2.compareTo(str1);
+                }
+            }
+        });
+        map = new HashMap<String, Integer>();
+    }
+
+    /*
+     * @param word: A string
+     * @return: nothing
+     */
+    public void add(String word) {
+        // write your code here
+        if (!map.containsKey(word)){
+            map.put(word, 0);
+        }
+        map.put(word, map.get(word) + 1);
+        
+        if (seen.contains(word)){
+            seen.remove(word);
+            seen.add(word);
+        } else {
+            seen.add(word);
+            if (seen.size() > size){
+                seen.pollFirst();
+            }
+        }
+        
+        for (Map.Entry<String, Integer> entry : map.entrySet()){
+            System.out.print(entry.getKey() + "  " + entry.getValue());
+        }
+    }
+
+    /*
+     * @return: the current top k frequent words.
+     */
+    public List<String> topk() {
+        // Write your code here
+        List<String> results = new ArrayList<String>();
+        Iterator it = seen.iterator();
+        while(it.hasNext()) {
+             String str = (String)it.next();
+             results.add(0, str);
+        }
+        return results;
+    }
+}
