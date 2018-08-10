@@ -1,0 +1,44 @@
+/**
+ * Definition for ListNode.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int val) {
+ *         this.val = val;
+ *         this.next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    /**
+     * 102. Linked List Cycle
+     *https://www.lintcode.com/problem/linked-list-cycle/leaderboard
+     * pro: 一次遍历求链表是否有环
+     * tag： two pointer
+     * sol： 快慢指针，有换一定相遇
+     * mis：链表都不难，但都不好写对。
+     *      1) 头在哪里（比如快指针）
+     *      2) 什么时候结束，是 pointer == null 还是 pointer.next == null
+     *      3) 复制链表，翻转，记得把next变成 null，不然绝对爆栈
+     *      4) 复制链表，翻转，next还没存，就先别删，删你妈逼啊删
+     * follow： 求入口点在哪里，数学问问题103. Linked List Cycle II
+     * @param head: The first node of linked list.
+     * @return: True if it has a cycle, or false
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null){
+            return false;
+        }
+        // 链表遍历核心问题之一，遍历终点在哪里！
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null){
+            if (slow == fast){
+                return true;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return false;
+    }
+}
