@@ -21,6 +21,14 @@ public class Solution {
      *      2) 什么时候结束，是 pointer == null 还是 pointer.next == null
      *      3) 复制链表，翻转，记得把next变成 null，不然绝对爆栈
      *      4) 复制链表，翻转，next还没存，就先别删，删你妈逼啊删
+     *      
+     *      hashset的错误：看version 2 的实现
+     *        set判断一个数先看基本的hashcode是不是一样，然后看equals
+     *        所以你要重写hashode和equals
+     *        随便写个类没用的
+     *   
+     *        这里是同一个对象，一个地址，所以可以用。但是如果new 一个就不能用了。
+     *
      * follow： 求入口点在哪里，数学问问题103. Linked List Cycle II
      * @param head: The first node of linked list.
      * @return: True if it has a cycle, or false
@@ -42,3 +50,17 @@ public class Solution {
         return false;
     }
 }
+// version 2 Hashset实现
+public boolean hasCycle(ListNode head) {
+        HashSet<ListNode> set = new HashSet<>();
+        
+        while (head != null){
+            if (set.contains(head)){
+                return true;
+            } else {
+              set.add(head);  
+            }
+            head = head.next;
+        }
+        return false;
+    }
