@@ -1,47 +1,71 @@
-import java.util.Random;
-
 public class Solution {
-    /*
+    /**
+     * 
      * @param A: an integer array
-     * @return: 
+     * @return: nothing
      */
-    public Random rand;
-    public void sortIntegers2(int[] A) {
-        rand = new Random();
-        // write your code here
+    public void sortIntegers(int[] A) {
+        // key1 ： 先shuffle保证不会出最坏情况
+        shuffle(A);
         quickSort(A, 0, A.length - 1);
     }
-    
-    public void quickSort(int[] A, int start, int end) {
-        if (start >= end) {
+    private void quickSort(int[] A, int i, int j){
+        //
+        int start = i;
+        int end = j;
+        if (start >= end){
             return;
         }
-
-        int index = rand.nextInt(end - start + 1)  + start;
-        int pivot = A[index];
-        int left = start;
-        int right = end;
-        
-        while (left <= right) {
-            while (left <= right && A[left] < pivot) {
-                left ++;
-            }
-            while (left <= right && A[right] > pivot) {
-                right --;
-            }
+        // key2 : 必须把值取出来，因为这个index上的值会变
+        int mid = (start + end)/ 2;
+        int pivot = A[mid];
+        // key3 : 快排是和数值做对比，却是保证这个相对于这个index而言，比pivot小的在左边
+        // 比pivot大的在右边
+        // [5,6,1,2,4,7,3,1,0]
+        while (start <= end){
+            // key4 ! 最重要： A[start] < pivot， 只要A[start] <= pivot 就可以换
+            // [1,1,1,1,1,2] 这是保证每次换的一边会有数
             
-            if (left <= right) {
-                int temp = A[left];
-                A[left] = A[right];
-                A[right] = temp;
-                
-                left ++;
-                right --;
+            // key5 ! 最重要：start <= end，不然会出现两个区间有交集的情况
+            //[3,2,1,4,5]， 一旦有交集，会在区间长度为2的时候，无限分下去
+            while (start <= end && A[start] <= pivot){
+                start++;
+            }
+            while (start <= end && A[end] >= pivot){
+                end--;
+            }
+            if (start <= end){
+                swap(A, start, end);
+                start++;
+                end--;
             }
         }
-        // A[start... right] 
-        quickSort(A, start, right);
-        // A[left ... end]
-        quickSort(A, left, end);
+        // System.out.println("i " + i);
+        // System.out.println("j " + j);
+        // System.out.println("pivot " + pivot);
+        // System.out.println("start " + start);
+        // System.out.println("end " + end);
+        // for (int k = 0; k < A.length; k++){
+        //     System.out.print(A[k] + " ");
+        // }
+        // System.out.println("");
+        // key6 ! 最重要：start <= end，交错，指针互换
+        quickSort(A, i, end);
+        quickSort(A, start, j);
+    }
+    private void shuffle(int[] A){
+        Random ran = new Random();
+        for (int i = 0; i < A.length; i++){
+            int index = ran.nextInt(A.length);
+            swap(A, i, index);
+        }
+    }
+    private void swap(int[] A, int i, int j){
+        if (i < 0 || i >= A.length || j < 0 || j >= A.length || i == j){
+            return;
+        }
+        int temp = A[j];
+        A[j] = A[i];
+        A[i] = temp;
     }
 }
