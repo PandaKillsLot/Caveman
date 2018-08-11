@@ -23,8 +23,9 @@ public class Solution {
         // 比pivot大的在右边
         // [5,6,1,2,4,7,3,1,0]
         while (start <= end){
-            // key4 ! 最重要： A[start] < pivot， 只要A[start] <= pivot 就可以换
+            // key4 ! 最重要： A[start] < pivot， 只要A[start] >= pivot 就可以换
             // [1,1,1,1,1,2] 这是保证每次换的一边会有数
+            // [3,2,1,4,5]  避免指针一路滑出去
             
             // key5 ! 最重要：start <= end，不然会出现两个区间有交集的情况
             //[3,2,1,4,5]， 一旦有交集，会在区间长度为2的时候，无限分下去
