@@ -1,0 +1,81 @@
+class Solution {
+    /**
+     * 5. Kth Largest Element
+     * https://www.lintcode.com/problem/kth-largest-element/description
+     * pro： 求第k大，注意要反过来排序
+     * sol： 快选，时间复杂O(n)
+     * mis:  注意，快排，如果中间pivot就在位置上，是尼玛的有缝隙的， left + 2 = right
+     * 
+     * @param k : description of k
+     * @param nums : array of nums
+     * @return: description of return
+     */
+    public int kthLargestElement(int k, int[] nums) {
+        int[] A = nums;
+        if (k > nums.length){
+            k = nums.length;
+        } else if(k < 1){
+            k = 1;
+        }
+        return quickSort(A, 0, A.length - 1, k);
+    }
+    private int quickSort(int[] A, int i, int j, int k){
+        
+        int start = i;
+        int end = j;
+        if (start >= end){
+            return A[start];
+        }
+       
+        int mid = (start + end)/ 2;
+        int pivot = A[mid];
+        
+        while (start <= end){
+            while (start <= end && A[start] > pivot){
+                start++;
+            }
+            while (start <= end && A[end] < pivot){
+                end--;
+            }
+            if (start <= end){
+                swap(A, start, end);
+                start++;
+                end--;
+            }
+        }
+        // System.out.println("i " + i);
+        // System.out.println("j " + j);
+        // System.out.println("pivot " + pivot);
+        // System.out.println("start " + start);
+        // System.out.println("end " + end);
+        // for (int k = 0; k < A.length; k++){
+        //     System.out.print(A[k] + " ");
+        // }
+        // System.out.println("-------------");
+        if (k <= end - i + 1){
+            return quickSort(A, i, end, k);
+        } else if (start == end + 2 && k == end - i + 1 + 1){
+            // 中间还尼玛带缝隙
+            return A[end + 1];
+        } else {
+            return quickSort(A, start, j, k - (end - i + 1));
+        }
+        // quickSort(A, i, end);
+        // quickSort(A, start, j);
+    }
+    private void shuffle(int[] A){
+        Random ran = new Random();
+        for (int i = 0; i < A.length; i++){
+            int index = ran.nextInt(A.length);
+            swap(A, i, index);
+        }
+    }
+    private void swap(int[] A, int i, int j){
+        if (i < 0 || i >= A.length || j < 0 || j >= A.length || i == j){
+            return;
+        }
+        int temp = A[j];
+        A[j] = A[i];
+        A[i] = temp;
+    }
+}
