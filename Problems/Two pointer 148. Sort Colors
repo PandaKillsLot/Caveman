@@ -1,0 +1,44 @@
+public class Solution {
+    /**
+     * 148. Sort Colors
+     * https://www.lintcode.com/problem/sort-colors/description
+     * pro: 012的数组，排序成 012
+     * tag:two pointer
+     * sol：3指针，两个格挡0,2,一个扫
+     * mis：2换回来的可能是0，所以i--，要在处理一次
+     * 那么为什么0不用再处理一次呢，傻比，前面是有序的，有2早处理掉了
+     * fol：
+     * @param nums: A list of integer which is 0, 1 or 2 
+     * @return: nothing
+     */
+    public void sortColors(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0){
+            return;
+        }
+        int p_zero = 0;
+        int p_two = nums.length - 1;
+        
+        for (int i = 0; i < nums.length; i++){
+            if (i > p_two){
+                break;
+            }
+            if (nums[i] == 1){
+                continue;
+            } else if (nums[i] == 0){
+                swap(p_zero, i, nums);
+                p_zero++;
+                //i--;
+            } else {
+                swap(p_two, i, nums);
+                p_two--;
+                i--;
+            }
+        }
+    }
+    private void swap(int i, int j, int[] nums){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
