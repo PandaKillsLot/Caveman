@@ -1,0 +1,43 @@
+class Solution {
+    /**
+    *150. Evaluate Reverse Polish Notation
+    *https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
+    *pro: 按新的顺序算数学表达式
+    *tag:Stack
+    *sol：stack不是说每次全部压进去在做，而是用来处理每次遇到一个数（这里是第一个符号），就要把之前的东西全倒出来的情况
+    *mis: 数学问题0不要当分母
+    *fol
+    *
+    */
+    public int evalRPN(String[] tokens) {
+        // 从第一个运算符开始切
+        if (tokens == null || tokens.length == 0){
+            return 0;
+        }
+        
+        Stack<String> stack = new Stack<>();
+        
+        for (String str : tokens){
+            if (str.equals("+") || str.equals("-") || str.equals("/") ||str.equals("*")){
+                // 输入一定是可行的，但是如果number的数据颠倒，那么就会产生0在下面的问题
+                int number2 = Integer.valueOf(stack.pop());
+                int number1 = Integer.valueOf(stack.pop());
+                int result;
+                if (str.equals("+")){
+                    result = number1 + number2;
+                } else if (str.equals("-")){
+                    result = number1 - number2;
+                } else if (str.equals("*")){
+                    result = number1 * number2;
+                } else {
+                    result = number1 / number2;
+                }
+                stack.push(String.valueOf(result));
+            } else {
+                stack.push(str);
+            }
+            
+        }
+        return Integer.valueOf(stack.pop());
+    }
+}
