@@ -1,0 +1,31 @@
+class Solution {
+    /**
+    *11. Container With Most Water
+    *https://leetcode.com/problems/container-with-most-water/description/
+    *pro:选两个bar构成最大的水槽
+    *tag:two pointer
+    *sol: 怎么从o(n^2)变o(n), 从距离最远的两个bar开始选，怎么选使得水槽装更多水呢，找比矮的bar更高的。（强行有序化）
+    *mis:
+    *fol
+    *
+    */
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int max = 0;
+        
+        // 第一反应是枚举
+        // 但其实bar的变动是有规律的，在距离最宽的情况下，剩下的就是把最小的替换掉，这样才有可能长
+        while (left < right){
+            int area = (right - left) * Math.min(height[left], height[right]);
+            max = Math.max(max, area);
+            
+            if (height[left] < height[right]){
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return max;
+    }
+}
