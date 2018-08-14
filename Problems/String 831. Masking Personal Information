@@ -1,0 +1,74 @@
+class Solution {
+   /**
+    *831. Masking Personal Information
+    *https://leetcode.com/problems/masking-personal-information/submissions/1
+    *pro:给String打马萨克
+    *tag:String
+    *sol：先看是邮箱还是手机，手机要数几位打几个星星
+    *mis:
+    *fol
+    *
+    */
+    public String maskPII(String S) {
+        String s = S;
+        if (isEmail(s)){
+            return maskEmail(s.toLowerCase());
+        } else {
+            return maskPhone(s);
+        }
+    }
+    // check by last character
+    private boolean isEmail(String s){
+        //return !Character.isDigit(s.charAt(s.length() - 1));
+        for (int i = s.length() - 1; i >= 0; i--){
+            
+            if (Character.isDigit(s.charAt(i))){
+                return false;
+            }
+        }
+        return true;
+    }
+    // append last + *** + fisrt
+    private String maskEmail(String s){
+        StringBuilder sb = new StringBuilder();
+        for (int i = s.length() - 1; i >= 0; i--){
+            sb.append(s.charAt(i));
+            if (s.charAt(i) == '@'){
+                sb.append(s.charAt(i - 1));
+                sb.append("*****");
+                sb.append(s.charAt(0));
+                break;
+            }
+        }
+        return sb.reverse().toString();
+    }
+    // append last + *** + country
+    private String maskPhone(String s){
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (int i = s.length() - 1; i >= 0; i--){
+            if (Character.isDigit(s.charAt(i))){
+                count++;
+            }
+        }
+        int i = s.length() - 1;
+        int digit = 4;
+        while(digit > 0){
+            if (Character.isDigit(s.charAt(i))){
+                sb.append(s.charAt(i));
+                digit--;
+            }
+            i--;
+        }
+        sb.append("-***-***");
+        if (count > 10){
+             sb.append("-");
+             while(count > 10){
+                 sb.append("*");
+                 count--;
+             }
+            sb.append("+");
+        }
+        return sb.reverse().toString();
+    }
+}
