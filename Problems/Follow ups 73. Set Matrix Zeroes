@@ -1,0 +1,108 @@
+ public class Solution {
+     /**
+     *73. Set Matrix Zeroes
+     *https://leetcode.com/problems/set-matrix-zeroes/description/
+     *pro: 一个矩阵, 如果M[i][j] 是 0,那就row, col都是0,求最小space且 O(mn)的解法
+     *tag: 优化
+     *sol: 1) 额外 O(m + n),记录下所有是0的行和列
+     *     2) 额外 O(1), 在第一行和第一列涂(节省额外空间的办法就是在原有空间上修改, 滚动数组也是这个原理)
+              但是需要注意涂改会不会影响行和列本身.比如这里,如果第一行一列本身都不是0,但是因为中间的数把第一行第一列标记成0了,就很难知道
+              原来是不是该变成0了.
+              所以其实被标记的行如果后面也会像其他行一样参与到普通运算里面,那就必须要提前处理
+     * mis: 特殊的记录行,没有被提前处理
+     * fol:
+     */
+     public void setZeroes(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return;
+        }
+        if (matrix[0] == null || matrix[0].length == 0) {
+            return;
+        }
+        boolean row = false;
+        boolean col = false;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][0] == 0){
+                row = true;
+                break;
+            }
+        }
+        for (int j = 0; j < matrix[0].length; j++) { 
+            if (matrix[0][j] == 0){
+                col = true;
+                break;
+            }
+        } 
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[0].length; j++) {
+                
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+         
+         for (int i = 1; i < matrix.length; i++) {
+            for (int j = 1; j < matrix[0].length; j++) {
+                
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if (row){
+            for (int i = 0; i < matrix.length; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+         
+         if (col){
+             for (int j = 0; j < matrix[0].length; j++) { 
+                matrix[0][j] = 0;
+             }
+         }
+ 
+     }
+
+     
+     
+     
+//     public void setZeroes(int[][] matrix) {
+//         // 思路： 记录下是这行这列是不是为0
+//         // 1.直接开m+n 空间记录下来
+//         // 2. 把行和列记录在第一行第一列，然后最后处理下行和列
+//         if (matrix == null || matrix.length == 0) {
+//             return;
+//         }
+//         if (matrix[0] == null || matrix[0].length == 0) {
+//             return;
+//         }
+//         HashSet<Integer> row = new HashSet<Integer>();
+//         HashSet<Integer> col = new HashSet<Integer>();
+//         for (int i = 0; i < matrix.length; i++) {
+//             for (int j = 0; j < matrix[0].length; j++) {
+//                 // if (row.contains(i) || col.contains(j)) {
+//                 //     matrix[i][j] = 0;
+//                 //     continue;
+//                 // }
+//                 if (matrix[i][j] == 0) {
+//                     row.add(i);
+//                     col.add(j);
+//                 }
+//             }
+//         }
+        
+//         for (int i = 0; i < matrix.length; i++) {
+//             for (int j = 0; j < matrix[0].length; j++) {
+//                 if (row.contains(i) || col.contains(j)) {
+//                     matrix[i][j] = 0;
+//                     continue;
+//                 }
+//             }
+//         }
+//     }
+    
+     
+    
+}
