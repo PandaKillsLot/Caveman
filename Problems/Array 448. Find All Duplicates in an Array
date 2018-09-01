@@ -1,0 +1,86 @@
+class Solution {
+        
+    /**
+    * 448. Find All Duplicates in an Array
+    * https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/description/
+    * pro: 长度为n的数组里有1-n的数字，有的数字出现两次，求没有出现的数字
+    * tag: array
+    * sol: 如果没有重复，那么数字和index是唯一对应的。对每个nums[i]把nums[nums[i] - 1]标记成－的，再次遍历遇到负数，就说明前面已经遇到过了.
+            然后再回头遍历一遍，回头看一下相应位置上还是正数的，就是missing number
+    * mis: nums[i] might be negative
+    * fol :
+    * others: 处理重复，最好用的是HashMap，不借助额外空间，一般用排序。不能排序。这类题目的特点就是存在额外的顺序关系，不单单是小的数在前，更重要的是，每     *         个i在nums都在nums[i- 1]的位置上。也就是本身自己带了个hashmap
+    */
+//     public List<Integer> findDisappearedNumbers(int[] nums) {
+//         List<Integer> ans= new ArrayList<Integer>();
+//         if (nums == null|| nums.length == 0){
+//             return ans;
+//         }
+        
+//         for (int i = 0; i < nums.length; i++){
+//             int val = Math.abs(nums[i]);
+            
+//             if (nums[val - 1] > 0){
+//                 nums[val - 1] *= -1;
+//             }
+//         }
+//         for (int i = 0; i < nums.length; i++){
+            
+//             if (nums[i] > 0){
+//                 ans.add(i + 1);
+//             }
+//         }
+//         return ans;
+        
+//     }
+//     public List<Integer> findDisappearedNumbers(int[] nums) {
+//         List<Integer> ans= new ArrayList<Integer>();
+//         if (nums == null|| nums.length == 0){
+//             return ans;
+//         } 
+//         // instead of "-", now change the value
+//         int n = nums.length;
+//         for (int i = 0; i < nums.length; i++){
+//             // nums[i] -> value
+//             // nums[i] % (n + 1) - 1 -> index
+//             // nums[nums[i] - 1] val on position
+//             nums[nums[i] % (n + 1) - 1] += n + 1;
+//         }
+//         for (int i = 0; i < nums.length; i++){
+            
+//             if (nums[i] / (n + 1) == 0){
+//                 ans.add(i + 1);
+//             }
+//         }
+//         return ans;
+//     }
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> ans= new ArrayList<Integer>();
+        if (nums == null|| nums.length == 0){
+            return ans;
+        } 
+        // instead of using a HashMap, now sort the array
+        // if the nums[index] != index + 1, swap
+        for (int i = 0; i < nums.length; i++){
+            
+            // nums[i] = 3, nums[2] = 3 √
+            if (nums[nums[i] - 1] != nums[i]) {
+                swap(nums, i, nums[i] - 1);
+                // step back when you pull val from unsorted area
+                i--;
+            }
+            
+        }
+        for (int i = 0; i < nums.length; i++){
+            if (nums[i] != i + 1){
+                ans.add(i + 1);
+            }
+        }
+        return ans;
+    }
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
