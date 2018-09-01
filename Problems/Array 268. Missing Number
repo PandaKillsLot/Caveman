@@ -1,0 +1,45 @@
+public class Solution {
+    /**
+     * 268. Missing Number
+     * https://leetcode.com/problems/missing-number/description/
+     * pro: 长度n, 数字 0 - n, 求消失的数 
+     * tag: Array, 双序列匹配
+     * sol: swap 解法,(涂和swap任选)
+     * mis: 记得考虑特殊情况, 全部都在,返回最长值
+     * fol:
+     * oth:双序列 array 对比系列之一
+     */
+    // public int missingNumber(int[] nums) {
+    //     Arrays.sort(nums);
+    //     for (int i = 0; i < nums.length; i++) {
+    //         if (nums[i] != i) {
+    //             return i;
+    //         }
+    //     }
+    //     return nums[nums.length - 1] + 1;
+    // }
+    
+    public int missingNumber(int[] nums) {
+        if (nums == null || nums.length == 0){
+            return -1;
+        }
+        for (int i = 0; i < nums.length; i++){
+            if (nums[i] <  nums.length && nums[nums[i]] != nums[i]){
+                swap(nums, i, nums[i]);
+                i--;
+            }
+        }
+        
+        for (int i = 0; i < nums.length; i++){
+            if (nums[i] != i){
+                return i;
+            }
+        }
+        return nums.length;
+    }
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
