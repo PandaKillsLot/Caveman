@@ -1,0 +1,103 @@
+class Solution {
+    /**
+     * 6. ZigZag Conversion
+     * https://leetcode.com/problems/zigzag-conversion/description/
+     * pro:一个String按Z形重新排一遍
+     * tag: Math(矩阵规律), String
+     * sol: 1) 直观思路, 找个矩阵重新存一遍 
+            2) 数学化, 找规律. 
+               直观的感受, 其实有点想饮料被挤进了 Z 字形的吸管.
+               
+               虽然顺序打乱了, 但是Z字形的间距是固定的,所以彼此应该存在规律.
+               可以很简单的发现 第一行, 每个字符间距是 2 * numRows - 2. 
+               假设第一个字符是 0, 那么和同行下一个距离就是 差一个行,一个列. 列上差了 n - 1 个, 行上差了 n - 1个.
+               现在问题就成了怎么处理中间的问题. 一开始的思路是 中间也全部是等差数列, 后来做了发现不是.
+               其实是, 中间斜着的每个数,都是已经可以确定字符的字符, 加一个固定的数得来的.
+               
+               0     6     12
+               1   5 7   11
+               2 4   8 10
+               3     9
+               size = 2 * n - 2 = 6, 列长和行长都是 4
+               看 1和5, 1和中间的5, 相差的是, 234, 其实就是 在 1上 加一个间隔size 然后 - 2 * 行, 为什么减 2 *i 勒
+               看 2和4, 相差的是, 8 - 2* 2 相当于这个值,每次是过 6 定点后 double的
+               
+     * mis:
+     * fol:
+     * oth:
+     */
+    public String convert(String s, int numRows) {
+         if (s == null || s.length() == 0){
+            return "";
+        }
+        if (numRows == 1){
+            return s;
+        }
+        StringBuilder sb = new StringBuilder();
+        int size = 2 * numRows - 2;
+        for (int  i = 0; i < numRows; i++){
+            for (int j = i; j < s.length(); j += size){
+                sb.append(s.charAt(j));
+                if (i > 0 && i < numRows - 1){
+                    int pos = j + size - 2 * i;
+                    if (pos < s.length()){
+                        sb.append(s.charAt(pos));
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+//     public String convert(String s, int numRows) {
+//         if (s == null || s.length() == 0){
+//             return "";
+//         }
+//         if (numRows == 1){
+//             return s;
+//         }
+//         char[][] matrix = new char[numRows][s.length()];
+//         int row = 0;
+//         int col = 0;
+//         int i = 0;
+//         boolean moveDown = true;
+        
+//         while (i < s.length()){
+// //             System.out.println("row " + row);
+// //             System.out.println("col " + col);
+// //             System.out.println("i " + i);
+// //             System.out.println("moveDown " + moveDown);
+            
+            
+//             matrix[row][col] = s.charAt(i++);
+//             // down
+//             if (row < numRows - 1 && moveDown){
+//                 //System.out.println("??? ");
+//                 row++;
+//             } else {
+//                 // zigzag
+//                 //System.out.println(")))) ");
+//                 moveDown = false;
+                
+//                 if (row > 0 && !moveDown){
+//                     row--;
+//                     col++;
+//                 } else {
+//                    moveDown = true;
+//                    row++;
+//                 }
+//             }
+            
+//         }
+//         StringBuilder sb = new StringBuilder();
+//         for (int m = 0; m < numRows; m++){
+//             for (int n = 0; n < s.length(); n++){
+//                 if (matrix[m][n] == 0){
+//                     continue;
+//                 }
+//                 sb.append(matrix[m][n]);
+//             }
+//         }
+//         return sb.toString();
+//     }
+    
+}
