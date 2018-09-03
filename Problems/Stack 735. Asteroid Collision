@@ -1,0 +1,50 @@
+class Solution {
+    // 不可能存在, 一个负流星在,他前面的正流星也还在
+    /**
+     * 735. Asteroid Collision
+     * https://leetcode.com/problems/asteroid-collision/description/
+     * pro: 一个数组, 数字大小表示流星大小,数字正负表示运行方向. 正负相遇毁掉小的.求最终状态
+     * tag: stack
+     * sol: 每次相遇,最后最多剩下一个. 每个负数, 按顺序, 和左边的流星相遇. 所以用stack保存而不是pq.
+            所以最后剩下的负数,一定都在左边, 剩下的真数,一定都在右边
+     * mis: 1.采用pq而不是stack, 认为是和最小值相比,而不是距离最近的
+            2. 想记录下每个流星的做坐标, 认为存在交叉的情况
+     *     
+     * fol:
+     * oth:不想清楚,真的没的做
+     */
+    public int[] asteroidCollision(int[] asteroids) {
+        if(asteroids == null || asteroids.length == 0){
+            return null;
+        }   
+        Stack<Integer> stack = new Stack();
+        ArrayList<Integer> ans = new ArrayList<>();       
+
+        for (int i = 0; i < asteroids.length; i++){
+            if (asteroids[i] > 0){
+                stack.push(asteroids[i]);
+            } else {
+                while (!stack.isEmpty() && stack.peek() + asteroids[i] < 0){
+                    stack.pop();
+                }
+                if (!stack.isEmpty() && stack.peek() + asteroids[i] == 0){
+                    stack.pop();
+                } else if (stack.size() == 0){
+                    ans.add(asteroids[i]);
+                } 
+            }
+        }
+        int j = ans.size();
+        while (!stack.isEmpty()){
+            ans.add(j, stack.pop());
+        }
+        int[] res = new int[ans.size()];
+        int i = 0;
+        for (Integer num : ans){
+            res[i] = ans.get(i);
+            i++;
+        }
+        
+        return res;
+    }
+}
