@@ -1,0 +1,40 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    /**
+     * 24. Swap Nodes in Pairs
+     * https://leetcode.com/problems/swap-nodes-in-pairs/description/
+     * pro: 两两交换相邻列表
+     * tag: linkedlist
+     * sol: 等于做了两次插入, 用dummy node. 核心是怎么把步骤拆分, 然后该记录的next必须记录下来 
+     * mis:
+     * fol:
+     * oth:
+     */
+    public ListNode swapPairs(ListNode head) {
+        ListNode dummy = new  ListNode(-1);
+        ListNode prev = dummy;
+        dummy.next = head;
+        
+        while (head != null && head.next != null){
+            // 插入
+            ListNode next = head.next;
+            ListNode farNext = next.next;
+            
+            next.next = head;
+            head.next = farNext;
+            prev.next = next;
+            // 连接
+            prev = head;
+            head = head.next;
+            
+        }
+        return dummy.next;
+    }
+}
