@@ -1,0 +1,44 @@
+class Solution {
+    /**
+     * 152. Maximum Product Subarray
+     * https://leetcode.com/problems/maximum-product-subarray/description/
+     * pro: 一个数组, 求拥有最乘和的子序列
+     * tag: dp
+     * sol: 局部最优秀 vs 整体最优
+            所有的candidate, 一定是以nums[i]结尾的数组 加上前面的局部最优解
+            !!! 但是, 这里也可能是前面的最小解, 因为负数会使得值出现变化
+            最大的定义, 是正数乘最大, 负数乘最小. 如果小是 负的,就抛弃
+            
+            int[] curMax = new int[len];
+            int[] curMin = new int[len];
+            最大数等于三个数取其一
+            curMax[i] = Math.max(Math.max(curMax[i - 1] * nums[i], curMin[i - 1] * nums[i]), nums[i]);
+            curMin[i] = Math.min(Math.min(curMax[i - 1] * nums[i], curMin[i - 1] * nums[i]), nums[i]);
+            初始化dp[0]
+     * mis:
+     *     
+     * fol:152. Maximum Product Subarray
+     * oth:https://www.jianshu.com/p/9381d2257af3
+     */
+    public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0){
+            return 0;
+        }
+                
+        int len = nums.length;
+        int[] curMax = new int[len];
+        int[] curMin = new int[len];
+        curMax[0] = nums[0];
+        curMin[0] = nums[0];
+        // int max = Integer.MIN_VALUE;
+        int max = nums[0];
+        
+        for (int i = 1; i < nums.length; i++){
+            curMax[i] = Math.max(Math.max(curMax[i - 1] * nums[i], curMin[i - 1] * nums[i]), nums[i]);
+            curMin[i] = Math.min(Math.min(curMax[i - 1] * nums[i], curMin[i - 1] * nums[i]), nums[i]);
+            
+            max = Math.max(curMax[i], max);
+        }
+        return max;
+    }
+}
