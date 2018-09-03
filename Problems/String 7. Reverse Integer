@@ -1,0 +1,65 @@
+class Solution {
+     /**
+     * 7. Reverse Integer
+     * https://leetcode.com/problems/reverse-integer/description/
+     * pro: 翻转一个数字
+     * tag: String
+     * sol: 1) 字符串翻转 2) 纯数字翻转 (高位数和低位数翻转)
+     * mis: 注意符号溢出的问题
+     * fol:
+     * oth:
+     */
+    public int reverse(int x) {
+        boolean flag = true;
+        long b = x;
+        if (b < 0){
+            b = -b;
+            flag = false;
+        }
+        String number = String.valueOf(b);
+        System.out.println(number);
+        char[] array = number.toCharArray();
+        int i = 0;
+        int j = number.length() - 1;
+        while (i <= j){
+            char temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+            i++;
+            j--;
+        }
+        long ans = Long.valueOf(String.valueOf(array));
+        if (!flag){
+            ans = -ans;
+        }
+        if (ans > Integer.MAX_VALUE || ans < Integer.MIN_VALUE){
+            return 0;
+        } else {
+            return (int)ans;
+        }
+    }
+}
+
+ public class Solution {
+    /**
+     * 纯数字翻转
+     * @param n: the integer to be reversed
+     * @return: the reversed integer
+     */
+    public int reverse(int n) {
+        // write your code here
+        long reverse = 0;
+        int sign = 1;
+        
+        if (n < 0) {
+            sign = -sign;
+            n = -n;
+        }
+        while (n > 0) {
+            reverse = reverse * 10 + n % 10;
+            n = n / 10;
+        }
+        
+        return reverse > Integer.MAX_VALUE ? 0 : (int) reverse * sign;
+    }
+}
