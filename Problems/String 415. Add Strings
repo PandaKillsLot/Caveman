@@ -7,7 +7,7 @@ class Solution {
      * tag: String math
      * sol: 数字的进位表示 + 合并两个序列
      * mis: char -> int : int(char - '0') || int -> char : char(int + '0')
-     * fol:
+     * fol: 43. Multiply Strings
      * oth:
      */
         if (num1 == null){
