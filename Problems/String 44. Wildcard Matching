@@ -1,0 +1,44 @@
+public class Solution {
+    /**
+     * 44. Wildcard Matching
+     * https://leetcode.com/problems/wildcard-matching/description/
+     * pro: 两个字符串能否完全匹配, ? 代表任何一个字符, * 代表任何一串字符(可以为空)
+     * tag: dp, 双序列dp
+     * sol: String 状态机, str1 和 str2 是不是匹配, 取决于 str1的substring是不是能匹配 str2的substring
+            dp[i][j] str1.substring(0, i) 能不能和 str2.substring(0, j)
+            如果是 char 不是 '*' 那么就看自己相对位置上两个字符是不是一样,然后斜上角是不是一样
+            如果是 '*' 多看个左边('*' 包括全部的字符)和上面的(*做空串)是不是一样,一样就一样
+     * mis:  
+     * fol:
+     * oth:
+     */
+    HashMap<String, Boolean> map = new HashMap<>();
+    public boolean isMatch(String s, String p) {
+        // write your code here
+        if (p == null){
+            return s == null;
+        }
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        dp[0][0] = true;
+        
+        for (int i = 1; i <= p.length(); i++){
+            if (p.charAt(i - 1) == '*'){
+                dp[0][i] = true;
+            } else {
+                break;
+            }
+        }
+        
+        for (int i = 1; i <= s.length(); i++){
+            for (int j = 1; j <= p.length(); j++){
+                if (p.charAt(j - 1) == '*'){
+                    dp[i][j] = dp[i - 1][j - 1] || dp[i][j - 1] || dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] && (p.charAt(j - 1) == '?' || p.charAt(j - 1) == s.charAt(i - 1));
+                }
+            }
+        }
+        
+        return dp[s.length()][p.length()];
+    }
+}
