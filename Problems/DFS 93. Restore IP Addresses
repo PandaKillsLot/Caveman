@@ -1,0 +1,44 @@
+class Solution {
+    /**
+     * 93. Restore IP Addresses
+     * https://leetcode.com/problems/restore-ip-addresses/description/
+     * pro: 给一串数组地址, 分割成有效的ip地址
+     * tag: DFS
+     * sol: 标准 组合问题 + 即使验证
+     * mis: 
+     *     
+     * fol:
+     * oth:
+     */
+    public List<String> restoreIpAddresses(String s) {
+        List<String> ans = new ArrayList<String>();
+        if (s == null || s.length() == 0){
+            return ans;
+        }
+        dfs(s, 0, 4, "", ans);
+        return ans;
+    }
+    public void dfs(String s, int pos, int partition,String buffer, List<String> ans){
+        
+        if (pos >= s.length() && partition <= 0){
+            ans.add(buffer.substring(0, buffer.length() - 1));
+            return;
+        }
+           
+         if (pos >= s.length() || partition <= 0){
+            return;
+        }
+        
+        
+        for (int i = 1; i < 4; i++){
+            if (pos + i > s.length()){
+                continue;
+            }
+            String str = s.substring(pos, pos + i);
+            if (Integer.valueOf(str) < 0 || Integer.valueOf(str) > 255 || (str.charAt(0) == '0' && str.length() > 1)){
+                continue;   
+            }
+            dfs(s, pos + i, partition - 1, buffer + str + ".", ans) ; 
+        }
+    }
+}
