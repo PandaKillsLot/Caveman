@@ -1,0 +1,54 @@
+class Solution {
+    public String numberToWords(int num) {
+    /**
+     * 273. Integer to English Words
+     * https://leetcode.com/problems/integer-to-english-words/description/
+     * pro: 英文数字转罗马数字
+     * tag: String, Math
+     * sol: 找出英文规则 3个位一切, 另外, 1 - 20 很 tricky,额外处理
+     * mis:    
+     * fol:
+     * oth:
+     */
+        if (num == 0){
+            return "Zero";
+        }
+        StringBuilder sb = new StringBuilder();
+        int other = 0;
+        String[] others = {"", "Thousand", "Million", "Billion"};
+        while (num > 0){
+            String s = get(num % 1000);
+            // 1000,000
+            if (s.length() > 1){
+                s = s +" "+ others[other] + " ";
+            }
+            sb.insert(0, s);
+            num = num / 1000;
+            other++;
+        }
+        // return sb.substring(0, sb.length() - 2).toString();
+        return sb.toString().trim();
+    }
+    private String get(int number){
+        String[] ones = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                         "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen","Sixteen", "Seventeen", "Eighteen", "Nineteen"}; 
+        String[] tens = {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+        StringBuilder sb = new StringBuilder(); 
+        
+        
+        int h = number / 100; 
+        if (h > 0){
+            sb.append(ones[h] + " ");
+            sb.append("Hundred" + " ");
+        }
+        if (number % 100 < 20){
+            sb.append(ones[number % 100] + " ");
+        }  else {
+            String temp = ones[number % 10];
+            number = number / 10;
+            sb.append(tens[number%10] + " ");
+            sb.append(temp + " ");
+        }
+        return sb.toString().trim(); 
+    }
+}
