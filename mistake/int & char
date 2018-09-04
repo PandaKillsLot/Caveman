@@ -1,0 +1,11 @@
+    int a = 7;  
+		char b = (char)a; 
+		//char c = (char)a + '0';
+		char d = (char)(a + '0');
+		
+		System.out.println(a); // 7
+		System.out.println(b); // 
+		System.out.println((char)a + '0');// 55, 48 + 7 
+		System.out.println(d); // 7
+		System.out.println(Character.valueOf((char) a)); // 
+		System.out.println(Character.forDigit(a, 10)); // 7
