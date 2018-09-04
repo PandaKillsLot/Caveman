@@ -1,0 +1,48 @@
+class Solution {
+    public String addStrings(String num1, String num2) {
+    /**
+     * 415. Add Strings
+     * https://leetcode.com/problems/add-strings/description/
+     * pro: 用string表示的大位数字相加
+     * tag: String math
+     * sol: 数字的进位表示 + 合并两个序列
+     * mis: char -> int : int(char - '0') || int -> char : char(int + '0')
+     * fol:
+     * oth:
+     */
+        if (num1 == null){
+            return num1;
+        }
+        if (num2 == null){
+            return num2;
+        }
+        int pointer1 = num1.length() - 1;
+        int pointer2 = num2.length() - 1;
+        int carrier = 0;
+        StringBuilder sb = new StringBuilder();
+
+        while (pointer1 >= 0 && pointer2 >= 0){
+            int cur = (int)(num1.charAt(pointer1--) - '0') + (int)(num2.charAt(pointer2--) - '0') + carrier;
+            carrier = cur / 10;
+            cur = cur % 10;
+            sb.insert(0, (char)(cur + '0'));
+        }
+        while (pointer1 >= 0){
+            int cur = (int)(num1.charAt(pointer1--) - '0') + carrier;
+            carrier = cur / 10;
+            cur = cur % 10;
+            sb.insert(0, (char)(cur + '0'));
+        }
+        while (pointer2 >= 0){
+            int cur = (int)(num2.charAt(pointer2--) - '0') + carrier;
+            carrier = cur / 10;
+            cur = cur % 10;
+            sb.insert(0, (char)(cur + '0'));
+        }
+        if (carrier == 1){
+            sb.insert(0, (char)(carrier + '0'));
+        }
+        
+        return sb.toString();
+    }
+}
