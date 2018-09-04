@@ -1,0 +1,91 @@
+class Solution {
+    /**
+     * 301. Remove Invalid Parentheses
+     * https://leetcode.com/problems/remove-invalid-parentheses/description/
+     * pro:给个有括号的字符串,求去最小改动后得到的String
+     * tag: 组合,搜索
+     * sol: 1) 最短 -> bfs 
+            2) 括号验证, 左右括号相等,且最后差为0 
+            3) 生成下一步, 每次删除一个任意位置的非法字符串 
+            4) 用了记忆化搜索, 已经有的string就不用再存了
+     * mis:  记得把头压进去
+     * fol:
+     * oth:
+     */
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> ans = new ArrayList<>();
+        if (s == null || s.length() == 0){
+            ans.add("");
+            return ans;
+        }
+        
+        Queue<String> queue = new LinkedList<>();
+        HashSet<String> set = new HashSet<>();
+        boolean isFound = false;
+        set.add(s);
+        queue.add(s);
+        
+        while (!queue.isEmpty() && !isFound){
+            int size = queue.size();
+            for (int i = 0; i < size; i++){
+                String temp = queue.poll();
+                //System.out.println(temp);
+                if (isValid(temp) == 0){
+                    isFound = true;
+                    ans.add(temp);
+                } else {
+                    addAll(queue, set, temp);
+                }
+            }
+        }
+        
+        return ans;
+    }
+    // )( 的专属验证
+    private int isValid(String s){
+        int number = 0;
+        for (int i = 0; i < s.length(); i++){
+            if (s.charAt(i) == '('){
+                number++;
+            } else if (s.charAt(i) == ')'){
+                number--;
+            }
+            
+            if (number < 0){
+                return number;
+            }
+        }
+        
+        return number;
+    }
+    // 加了记忆化搜索
+    private void addAll (Queue<String> queue, HashSet<String> set, String str){
+        ArrayList<String> list = getNext(str);
+        for (String s: list){
+            if (set.contains(s)){
+                continue;
+            }
+            set.add(s);
+            queue.offer(s);
+        }
+    }
+    // core : 产生下一个组合
+    private ArrayList<String> getNext(String str){
+        ArrayList<String> ans = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder(str);
+        int balance = isValid(str);
+        char toDelete = ')';
+        if (balance > 0){
+            toDelete = '(';
+        }
+        
+        for (int i = 0; i < str.length(); i++){
+            if (str.charAt(i) == toDelete){
+                ans.add(sb.deleteCharAt(i).toString());
+                sb.insert(i, toDelete);
+            }
+        }
+        return ans;
+    } 
+}
+
