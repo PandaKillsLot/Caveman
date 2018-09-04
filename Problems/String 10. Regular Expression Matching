@@ -1,0 +1,193 @@
+class Solution {
+    
+
+    /**
+     * @param s: A string 
+     * @param p: A string includes "." and "*"
+     * @return: A boolean
+     */
+     
+     // "aab"
+    //  "c*a*b"
+    //    0     c     *      a    *    b
+    // 0  true  false true  false true false -
+    // a  false false false true  true false -
+    // a  false false false false true false -
+    // b  false false false false false true -
+     /**
+     * 10. Regular Expression Matching
+     * https://leetcode.com/problems/regular-expression-matching/description/
+     * pro: 两个字符串能否完全匹配, '.' 代表任何一个字符, '*' 代表任何一串字符(可以为空)
+     * tag: dp, 双序列dp
+     * sol: 1)String 状态机, str1 和 str2 是不是匹配, 取决于 str1的substring是不是能匹配 str2的substring
+            dp[i][j] str1.substring(0, i) 能不能和 str2.substring(0, j)
+            如果是 char 不是 '*' 那么就看自己相对位置上两个字符是不是一样,然后斜上角是不是一样
+            如果是 '*' 多看个左边('*' 包括全部的字符)和上面的(*做空串)是不是一样,一样就一样
+            再多看个 [j - 2], 整个字符串都可以不在
+            
+            2) 记忆化搜索, 遇到分拆就divide and conquer
+               记忆化搜索, 里面放位置, 千万别放string,会超时的
+               
+     * mis:  
+     * fol:
+     * oth:
+     */
+    public boolean isMatch(String s, String p) {
+        // write your code here
+        if (p == null){
+            return s == null; 
+        }
+        
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        
+        dp[0][0] = true;
+        for (int i = 1; i <= s.length(); i++){
+            dp[i][0] = false;
+        } 
+        for (int j = 1; j <= p.length(); j++){
+            if (p.charAt(j - 1) == '*' && j > 1){
+                dp[0][j] |= dp[0][j - 2];
+            } else {
+                dp[0][j] = false;
+            }
+        } 
+        
+        for (int i = 1; i <= s.length(); i++){
+            for (int j = 1; j <= p.length(); j++){
+                if (p.charAt(j - 1) == '*'){
+                    if (j > 1){
+                        dp[i][j] |= dp[i][j - 2];  
+                   
+                        //dp[i][j] |= dp[i - 1][j];
+                        if (p.charAt(j-2) == '.' || s.charAt(i-1) == p.charAt(j-2)){
+                            dp[i][j] |= dp[i - 1][j];  
+                        }
+                    }
+                    
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] 
+                        && (s.charAt(i - 1) == p.charAt(j - 1) ||p.charAt(j - 1) == '.');
+                }
+            }   
+        }   
+        
+         for (int i = 1; i <= s.length(); i++){
+            for (int j = 1; j <= p.length(); j++){
+                System.out.print(dp[i][j] + " ");
+            }
+            System.out.println(" -------- ");
+        }   
+        
+        return dp[s.length()][p.length()];
+    }
+}
+     
+     public boolean isMatch(String s, String p) {
+         boolean[][] memorization = new boolean[s.length()][p.length()];
+         boolean[][] isVisited = new boolean[s.length()][p.length()];
+         
+         return helper(s, 0, p, 0,isVisited, memorization);
+     }
+    
+    public boolean helper(String s, int pos_s,String p, int pos_p, boolean[][] isVisited, boolean[][] memorization) {
+        if (s.length() == pos_s) {
+            return checkEmpty(p, pos_p);
+        }
+        // two string must be at the same pace
+        if (p.length() == pos_p) {
+            return false;
+        }
+        if (isVisited[pos_s][pos_p]) {
+            return memorization[pos_s][pos_p];
+        }
+        
+        char p1 = p.charAt(pos_p);
+        char s1 = s.charAt(pos_s);
+        char p2 = p.length() > pos_p + 1 ? p.charAt(pos_p + 1) : '?';
+        
+        boolean ans;
+        
+        if (p2 == '*') {
+            if (isSame(s1, p1)) {
+                //return isMatch(s.substring(1), p) || isMatch(s, p.substring(2));
+                
+              ans = helper(s, pos_s + 1, p, pos_p, isVisited, memorization) || helper(s, pos_s, p, pos_p + 2, isVisited, memorization);
+               
+            } else {
+               ans = helper(s, pos_s, p, pos_p + 2, isVisited, memorization);
+                
+                return ans;
+                //return isMatch(s, p.substring(2));
+            }
+        } else {
+             if (isSame(s1, p1)) {
+                ans = helper(s, pos_s + 1, p, pos_p + 1, isVisited, memorization);
+          
+                return ans;
+                //return isMatch(s.substring(1), p.substring(1));
+            } else {
+                ans  = false;  
+                //return false;
+            }
+        }
+        
+         isVisited[pos_s][pos_p] = true;
+         memorization[pos_s][pos_p] = ans;
+                
+         return ans;
+        
+    }
+    private boolean isSame(char p1, char p2){
+        if (p1 == p2) {
+            return true;
+        } else if(p2 == '.') {
+            return true;
+        } else {
+            return false;
+        }
+        
+    }
+    
+    private boolean checkEmpty(String p, int pos){
+        if ((p.length() - pos) % 2 != 0) {
+            System.out.println("1");
+            System.out.println("p.length() " + p.length());
+            System.out.println("pos " + pos);
+            return false;
+        }
+        for (int i = pos; i < p.length() - 1; i = i + 2) {
+            if (p.charAt(i + 1) != '*') {
+                System.out.println("2");
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    //   private boolean checkEmpty(String p, int pIndex) {
+    //     for (int i = pIndex; i < p.length(); i += 2) {
+    //         if (i + 1 >= p.length() || p.charAt(i + 1) != '*') {
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
