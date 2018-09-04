@@ -1,0 +1,51 @@
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+    /**
+     * 819. Most Common Word
+     * 
+     * pro: 求段落最常出现的单词
+     * tag: String
+     * sol: 先数, 是ban的就0, 再求最大
+     * mis:
+     *     
+     * fol:
+     * oth:
+     */
+        // para to list O(N) O(N)
+        // banned to hashMap O(N) O(N), initiate as -1
+        // iterate through para, max++
+        // iterate through hashmap O(N)
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for (String str : banned){
+            map.put(str, -1);
+        }
+        String[] paraArray = paragraph.split(" ");
+        int max = 0;
+        for (String str : paraArray){
+            if (str.charAt(str.length() - 1) == '!' || str.charAt(str.length() - 1) == '?' || str.charAt(str.length() - 1) == ',' 
+                || str.charAt(str.length() - 1) == ';' || str.charAt(str.length() - 1) == '.' || str.charAt(str.length() - 1) == '\''){
+                str = str.substring(0, str.length() - 1);
+            }
+            if (str.charAt(0) == '\''){
+                str = str.substring(1, str.length());
+            }
+            str = str.toLowerCase();
+            if (!map.containsKey(str)){
+                map.put(str, 0);
+            } 
+            int freq = map.get(str);
+            if (freq == -1){
+                continue;
+            }
+            max = Math.max(freq + 1, max);
+            map.put(str, freq + 1);
+        }
+        
+        for (Map.Entry<String, Integer> entry : map.entrySet()){
+            if (entry.getValue() == max){
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+}
