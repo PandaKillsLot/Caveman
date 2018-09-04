@@ -1,0 +1,72 @@
+class Solution {
+    // 想不清楚,别做
+    // 这题的重点是标记状态
+    // 错也是错在标记状态
+    /**
+     * 541. Reverse String II
+     * https://leetcode.com/problems/reverse-string-ii/description/
+     * pro: 给个k, 每两k个字符, 翻转前k个
+     * tag: String
+     * sol: 变char数组,然后翻转数组. 使用 % 2 == 0 来记录状态
+     * mis:
+     * fol:
+     * oth:
+     */
+    public String reverseStr(String s, int k) {
+        if (s == null || s.length() == 0){
+            return s;
+        }
+        char[] array = s.toCharArray();
+        
+        int kCount = 0;
+        int k2Count = 0;
+        //int k2Count = 0;
+        // mistake
+        // k = Math.min(k, s.length());
+        
+        for (int i = 0; i < s.length(); i++){
+            kCount++;
+            
+            k2Count++;
+            
+             // System.out.println(" k " + kCount);
+             // System.out.println(" 2k " + k2Count);
+             // System.out.println(" i " + i);
+            
+            // if (kCount == k && k2Count % (2 * k) != 0){
+            //     System.out.println("reverse");
+            //     reverse(k, i, array);
+            //     kCount = 0;
+            // }
+           
+            if (k2Count % (2 * k) == 0){
+                kCount = 0;
+            }
+            
+            if (kCount == k){
+                if (k2Count % (2 * k) != 0){
+                    reverse(k, i, array);
+                }
+            }
+            
+            if (i == s.length() - 1 && kCount < k){
+                System.out.println(" ? ");
+                reverse(kCount, i, array);
+            }
+
+        }
+        return String.valueOf(array);
+    }
+    private void reverse(int k, int i, char[] array){
+        int left = i - k + 1;
+        int right = i;
+        
+        while (left < right){
+            char temp = array[left];
+            array[left] = array[right];
+            array[right] = temp;
+            left++;
+            right--;
+        }
+    }
+}
