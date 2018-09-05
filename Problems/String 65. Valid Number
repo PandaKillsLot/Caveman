@@ -1,0 +1,99 @@
+public class Solution {
+    /*
+     * @param s: the string that represents a number
+     * @return: whether the string is a valid number
+     */
+    /**
+     * 65. Valid Number
+     * https://leetcode.com/problems/valid-number/description/
+     * pro: 校验一个String是不是合理数字
+     * tag: String
+     * sol: 考点是能不能考虑到全部的情况:
+            1)小数点: 小数点只能出现一次，但是小数点可以出现在任何位置，开头(".3"), 中间("1.e2"), 以及结尾("1." ), 而且需要注意的是，小数点不能出现在自                       然数 'e/E' 之后
+            2)正负号:  正负号可以再开头出现，可以再自然数e之后出现，但不能是最后一个字符，后面得有数字
+            3)e:自然数的前后必须有数字，即自然数不能出现在开头和结尾，如 "e" false,  ".e1" false, "3.e" false, "3.e1" true。而且小数点只能出现在自然                 数之前，还有就是自然数前面不能是符号，如 "+e1" false, "1+e" false. 解决方法：开头中间结尾三个位置分开讨论情况。
+            4)" "
+     * mis:  
+     * fol:
+     * oth:
+     */
+    public boolean isNumber(String s) {
+        // write your code here
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        boolean hasNeg = false;
+        boolean hasDot = false;
+        boolean hasE = false;
+        
+        // 去掉空格
+        s = s.trim();
+        if (s.length() == 0 || (s.length() == 1 && (s.charAt(0) < '0' || s.charAt(0) > '9'))){
+            return false;
+        }
+        // 先处理第一个，一因为后面要用
+        if (s.charAt(0) < '0' || s.charAt(0) > '9') {
+            if (s.charAt(0) == '+' || s.charAt(0) == '-'){
+                hasNeg = true;
+            } else if (s.charAt(0) == '.'){
+                hasDot = true;
+            } else{
+                return false;
+            }
+        }
+        // for (int i = 1; i < s.length(); i++) {
+        //     char temp = s.charAt(i);
+        //     if (temp == '+' || temp == '-'){
+        //         if (hasNeg){
+        //             return false;
+        //         }
+        //         hasNeg = true;
+        //         s = s.substring(0, i) +"0"+s.substring(i + 1);
+        //     }
+        // }
+        for (int i = 1; i < s.length(); i++) {
+            char temp = s.charAt(i);
+            if (s.charAt(i) < '0' || s.charAt(i) > '9') {
+                if (s.charAt(i) == '+' || s.charAt(i) == '-') {
+                    if (i < s.length() - 1
+                        && (s.charAt(i - 1) == 'e' || s.charAt(i - 1) == 'E')
+                        && (s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9')){
+                        // 符号只能出现在最前面，和e的后面，所以是否记录状态无所谓？
+                        hasNeg = true;
+                    } else {
+                        return false;
+                    }
+                } else if (temp == '.') {
+                    System.out.println("fuck " + i);
+                    System.out.println("fuck s " + s);
+                    if (hasDot) {
+                        return false;
+                    } else if (i > 0 && !Character.isDigit(s.charAt(i - 1))){
+                        if (i == s.length() - 1 || i < s.length() - 1 && !Character.isDigit(s.charAt(i + 1))){
+                             return false;
+                        }
+                    } else{
+                        if (i != s.length() - 1){
+                            s = s.substring(0, i) +"0"+s.substring(i + 1);
+                        }
+                        hasDot = true;
+                    }
+                } else if  (s.charAt(i) == 'e' || s.charAt(i) == 'E') {
+                    if (i > 0 && i < s.length() - 1 && Character.isDigit(s.charAt(i - 1)) && (Character.isDigit(s.charAt(i + 1)) 
+                        || s.charAt(i + 1) == '-' || s.charAt(i + 1) == '+')&& !hasE){
+                        hasDot = true;
+                        hasE = true;
+                        continue;
+                    } else {
+                        return false;
+                    }
+                    
+                   
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
