@@ -1,0 +1,89 @@
+class Solution {
+        /**
+        *31. Next Permutation
+        *https://leetcode.com/problems/next-permutation/description/
+        *pro: 求一串数字的下一个排列
+        *tag: 排列组合, Math
+        *sol: 1)暴力全部找出来求最小
+        *     2)逻辑法,找到第一个不是降序排序的地方,互换index,然后排序后面的鼠族
+        *     3)逻辑法优化： index交换后，后面一定是倒序的，所以reverse一下就好
+        *fol
+        */
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0){
+            return;
+        }
+        boolean flag = false;
+        int i = nums.length - 1;
+        while (i - 1 >= 0){
+            if (nums[i] > nums[i - 1]){
+                System.out.println("???");
+                flag = true;
+                int index = findBig(nums, i - 1);
+                swap(nums, i - 1, index);
+                quickSort(nums, i, nums.length - 1);
+                break;
+            }
+            i--;
+        }
+        if (!flag){
+            Arrays.sort(nums);
+        }
+    }
+    private void quickSort (int[] nums, int start, int end){
+        if (start >= end){
+            return;
+        }
+        int mid = nums[(start + end) / 2];
+        int i = start;
+        int j = end;
+        while (i <= j){
+            while(i <= j && nums[i] < mid){
+                i++;  
+            }
+            while(i <= j && nums[j] > mid){
+                j--;  
+            }
+            if (i <= j){
+                swap(nums, i, j);
+                i++;
+                j--;
+            }
+        }
+        quickSort(nums, start, j);
+        quickSort(nums, i, end);
+    }
+    private int findBig(int[] nums, int number){
+        
+        int index = 0;
+        int big = Integer.MAX_VALUE;
+        for (int i = number; i < nums.length; i++){
+            if (nums[i] - nums[number] > 0 && nums[i] - nums[number] < big){
+                big = nums[i] - nums[number];
+                index = i;
+            }
+        }
+        return index;
+    }
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
