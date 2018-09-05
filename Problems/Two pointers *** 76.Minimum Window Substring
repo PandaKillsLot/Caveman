@@ -1,0 +1,52 @@
+class Solution {
+    /**
+    *76.Minimum Window Substring
+    *https://leetcode.com/problems/minimum-window-substring/description/
+    *input： string s 和 t
+    *output： s中包含全部t的char的最短字符
+    *tag： two pointer, sliding window
+    *sol:  滑动窗口(因为是连续的)；把t哈希化(因为不是连续的)， 然后对S双指针。记录window中的t中的有效字符数量，可以把check变成O(1)
+    *mis:  循环里的j其实多走了一步,窗口size是 j-i, 不用加一
+    *oth： 枚举起点终点 -> 因为有重复的地方,优化成滑动窗口 -> t的全部字符,顺序可变,只能hash
+    */
+    public String minWindow(String s, String t) {
+        if (s == null){
+            return "";
+        }
+        int[] tHashcode = new int[256];
+        int[] windowHashCode = new int[256];
+        int windowCount = 0;
+        
+        int min = s.length() + 2;
+        int minLeft = 0;
+        int minRight = 0;
+        
+        for (int i = 0; i < t.length(); i++){
+            tHashcode[t.charAt(i)]++;
+        }
+        
+        int j = 0;
+        for (int i = 0; i < s.length(); i++){
+            // in
+            while (j < s.length() && windowCount < t.length()){
+                if (tHashcode[s.charAt(j)] > 0 && windowHashCode[s.charAt(j)] < tHashcode[s.charAt(j)]){
+                    windowCount++;
+                }
+                windowHashCode[s.charAt(j)]++;
+                j++;
+            }
+            //count                                // key 
+            if (windowCount == t.length() && min > j - i){
+                min = j - i;
+                minLeft = i;
+                minRight = j;
+            }
+            // out
+            if (tHashcode[s.charAt(i)] > 0 && windowHashCode[s.charAt(i)] <= tHashcode[s.charAt(i)]){
+                    windowCount--;
+            }
+            windowHashCode[s.charAt(i)]--;
+        }
+        return min == s.length() + 2 ? "" : s.substring(minLeft, minRight);
+    }
+}
