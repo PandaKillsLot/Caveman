@@ -1,0 +1,36 @@
+class Solution {
+    /**
+    *750. Number Of Corner Rectangles
+    *https://leetcode.com/problems/number-of-corner-rectangles/description/
+    *pro: 求矩阵中，四个角都是1的矩形个数
+    *tag: math
+    *sol: 第一反应是dp，发现继承无力，只要不是相邻3个点都是矩形，那就还要重新扫描一遍。第二反应就是遍历了 ，但是这样TEL。所以第三，排列组合闪耀登场。给定边，枚举column，能组成的矩形数，就是C n^2，真是骚
+   
+     _______________
+    |_1|__|__|_ |___|
+    |__|__|__|__|___|
+    |_1|__|__|__|___|
+    |__|__|__|__|___|
+     */
+    public int countCornerRectangles(int[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int total = 0;
+        for (int i = 0; i < grid.length; i++){
+           for (int j = i + 1; j < grid.length; j++){
+               int count = 0; 
+               for (int z = 0; z < grid[0].length; z++){
+                   // if (grid[i][0] == 1 && grid[j][0] == 1 && grid[i][z] == 1 && grid[i][z] == 1){
+                    if (grid[i][z] == 1 && grid[j][z] == 1){
+                        // 在这个高度区间可以合法边的个数, 如果是 1 那么 C 1 ^ 2是0
+                        count++;
+                    }
+                }
+                
+                total += count * (count - 1) / 2;
+            } 
+        }
+        return total;
+    }
+}
