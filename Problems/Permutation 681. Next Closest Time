@@ -1,0 +1,80 @@
+class Solution {
+    /**
+    *681. Next Closest Time
+    *https://leetcode.com/problems/next-closest-time/description/
+    *pro:  给一个时间，求用时间里的数字能组成的最近的下一个时间
+    *tag:  dfs, permutation(有条件限制的permutation)
+    *sol:  1)dfs出全部组合，暴力搜索:  找全部组合，然后去掉没用的，算出最大的
+    *      2)dfs搜出全部，但在搜的时候就剪纸。每加一个字符都判断下是不是合法，每个字符最后出来的时候直接和最大值判断一下
+    *      3)逻辑搜索，数字去重，并排序。从最低位分钟开始，一次向上面的位数推进。如果这个位数不是最大，那么就换第二大。如果这个位数是最大，说明最大数已经     *       换一轮，把这位数改成最小
+    *
+    */
+    public String nextClosestTime(String time) {
+        if (time == null || time.length() == 0){
+            return null;
+        }
+        List<String> list = new ArrayList<String>();
+        String min = null;
+        int val = Integer.MAX_VALUE;
+        getAll(time, list, "");
+        // System.out.println("??" + list.size());
+        // for (String s : list){
+        //     System.out.println(s);
+        // }
+        for(String str: list){
+            int gap = get(str, time);
+            if (gap < val){
+                val = gap;
+                min = str;
+            }
+        }
+        return min;
+    }
+    private int get(String str, String time){
+        int hour_now = Integer.valueOf(str.substring(0,2));
+        int minute_now = Integer.valueOf(str.substring(3,5));
+        int value_now = hour_now * 100 + minute_now;
+        
+        int hour_time = Integer.valueOf(time.substring(0,2));
+        int minute_time = Integer.valueOf(time.substring(3,5));
+        int value_time = hour_time * 100 + minute_time;
+        
+        if (value_now <= value_time) {
+            return value_now - value_time + 2400;
+        } else {
+            return value_now - value_time;
+        }
+    }
+    private void getAll(String time, List<String> list, String buffer){
+        if (buffer.length() == 5){
+            if (isValid(buffer)){
+                list.add(buffer);
+            }
+            return;
+        }
+        if (buffer.length() == 2){
+            getAll(time, list, buffer + ":");
+            return;
+        }
+        for (int i = 0; i < time.length(); i++){
+            if (i == 2){
+                continue;
+            }
+            getAll(time, list, buffer + time.charAt(i));
+        }
+    }
+    
+    private boolean isValid(String time){
+        int hour = Integer.valueOf(time.substring(0,2));
+        int minute = Integer.valueOf(time.substring(3,5));
+        
+        if (hour < 0 || hour > 23){
+            return false;
+        }
+        
+        if (minute < 0 || minute > 59){
+            return false;
+        }
+        return true;
+    }
+}
