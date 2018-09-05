@@ -1,0 +1,33 @@
+class Solution {
+    // 一个数,等于自己前面和自己相差一个平凡方数的最小距离 + 1
+    /**
+     * 279. Perfect Squares
+     * https://leetcode.com/problems/perfect-squares/description/
+     * pro:求一个数最少能被几个平方数表示
+     * tag: dp
+     * sol:  
+            dp[i] = Math(dp[i - j * j]
+     * mis:  
+     * fol:
+     * oth:
+     */
+    public int numSquares(int n) {
+        if (n <= 0){
+            return 0;
+        }
+        int[] dp =  new int[n + 1];
+        
+        for (int i = 0; i < Math.sqrt(n) + 1; i++){
+            if (i * i <= n){
+                dp[i * i] = 1;
+            }
+        } 
+        for (int i = 0; i <= n; i++){
+            dp[i] = dp[i] == 1 ? 1 : n;
+            for (int j = 1; j * j < i; j++){
+                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+            }
+        }
+        return dp[n];
+    }
+}
