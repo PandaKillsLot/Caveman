@@ -1,0 +1,52 @@
+class Solution {
+    /**
+     * 384. Shuffle an Array
+     * https://leetcode.com/problems/shuffle-an-array/description/
+     * pro: 打乱一个数组, 保证出来的组合是等概率的(不是求所有数)
+     * tag: math
+     * sol: knuth shuffle, 每次只从i的前面随机选数, 核心思想是, 这样可以保证一定是可以被 Pn^n整除的
+     * mis:  
+     * fol:
+     * oth:
+     */
+    int[] array;
+    int len;
+    Random ran;
+    public Solution(int[] nums) {
+        
+        this.array = nums.clone();
+        this.len = nums.length;
+        ran = new Random();
+    }
+    
+    /** Resets the array to its original configuration and return it. */
+    public int[] reset() {
+        return this.array;
+    }
+    
+    /** Returns a random shuffling of the array. */
+    public int[] shuffle() {
+        // array shuffle就是这么实现的，随机生成一堆位置，从头到尾换一遍
+        if (this.len == 0 || this.len == 1) {
+            return this.array;
+        }
+        int[] temp = this.array.clone();
+        for (int i = 1; i < len; i++) {
+            //                 ???   contains self? 必须要包涵自己
+            swap(temp, i, ran.nextInt(i + 1));
+        }
+        return temp;
+    }
+    private void swap( int[] array, int a, int b){
+        int temp = array[a];
+        array[a] = array[b];
+        array[b] = temp;
+    }
+}
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(nums);
+ * int[] param_1 = obj.reset();
+ * int[] param_2 = obj.shuffle();
+ */
