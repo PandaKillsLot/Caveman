@@ -1,0 +1,112 @@
+class Solution {
+/**
+* 149. Max Points on a Line
+* https://leetcode.com/problems/max-points-on-a-line/description/
+* pro: 求平面上的点,能构成几条线
+* tag: Math
+* sol: 
+        1)对每两个点都求一次直线解析式,为了避免重复, 给点先排个序.
+        2) 分别求k和b
+        3) 小心 处理点相同的情况 -> 直接先数有没有一样的,有一样的就加起来,不单独算.然后算斜率的时候,也记得遇到相同的就跳过
+* mis:  1)一开始只求了斜率没求截距  2) 实际面试的时候,最好问下面试官对斜率和截距的精度要求
+* fol:
+* oth:
+*/
+    public int maxPoints(Point[] points) {
+        if (points == null || points.length == 0){
+            return 0;
+        }
+        
+        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<String, Integer> number = new HashMap<>();
+        Arrays.sort(points, new Comparator<Point>(){
+            @Override
+            public int compare (Point p1, Point p2){
+                
+                return p1.x - p2.x;
+                
+            }
+        });
+        int r_max = 0;
+        for (int i = 0; i < points.length; i++){
+            String str = points[i].x + "?" + points[i].y;
+            if (!number.containsKey(str)){
+                number.put(str, 0);
+            } else {
+                number.put(str, number.get(str) + 1);
+                r_max = Math.max(r_max, number.get(str));
+            }
+        }
+        
+        int max = 1;
+        
+        for (int i = 0; i < points.length; i++){
+            if (i > 0 && points[i].x == points[i - 1].x && points[i].y == points[i - 1].y){
+                continue;
+            }
+            int redun = number.get(points[i].x + "?" + points[i].y);
+            HashSet<String> set = new HashSet<>();
+            for (int j = i + 1; j < points.length; j++){
+                if (j > 0 && points[j].x == points[i].x && points[j].y == points[i].y){
+                    continue;
+                }
+                
+                double slope = getSlope(points[i], points[j]);
+                double intercept = getIntercept(points[i], points[j]);
+                
+                String line = "";
+                line += slope == Integer.MAX_VALUE ? "?" + points[i].y : slope;
+                line += ":";
+                line += intercept == Integer.MAX_VALUE ? "!" + points[i].x : intercept;
+               
+                
+                //System.out.println("line " + line);
+                if (!map.containsKey(line)){
+                    map.put(line, 1 + redun);
+                    set.add(line);
+                } 
+                if (set.contains(line)){
+                    int m = map.get(line) + 1;
+                    map.put(line, m);
+                    
+                    max = Math.max(max, map.get(line));
+                }
+                
+               // System.out.println("max " + max);
+            }
+        }
+      
+       
+        return Math.max(max, r_max + 1);
+    }
+    
+    private double getSlope(Point p1, Point p2){
+        if (p1.x == p2.x){
+            return Integer.MAX_VALUE;
+        } else {
+            // precision problem [[0,0],[94911151,94911150],[94911152,94911151]]
+            return 1000000000 * (double) (p1.y - p2.y) / (double)(p1.x - p2.x);
+        }
+    }
+    private double getIntercept(Point p1, Point p2){
+        if (p1.x == p2.x){
+            return Integer.MAX_VALUE;
+        } else {
+            return (double) (p1.y * p2.x - p2.y * p1.x) / (double)(p2.x - p1.x);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
