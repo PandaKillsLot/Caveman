@@ -1,0 +1,40 @@
+class Solution {
+    
+/**
+* 771. Jewels and Stones
+* https://leetcode.com/problems/jewels-and-stones/description/
+* pro: 问J中的字符,在S中有多少个
+* tag: hash, 双序列比对
+* sol: 1) 把j丢到hashtable里去, 然后遍历S
+       2) 把J排序, S排序, 然后两者一起双指针搞
+* mis:  
+* fol:
+* oth:
+*/
+    /**
+    *有顺序，就可以不用hashtable匹配，但是这里的char array还是开了O（n）的空间，智商捉急啊
+    *
+    *
+    **/
+    public int numJewelsInStones(String J, String S) {
+        int j = 0;
+        int count  = 0;
+        
+        char[] array_J = J.toCharArray();
+        char[] array_S = S.toCharArray();
+        
+        Arrays.sort(array_J);
+        Arrays.sort(array_S);
+        
+        for (int i = 0; i < S.length(); i++){
+            while (j < array_J.length - 1 && array_J[j] < array_S[i]){
+                j++;
+            }
+            if (array_J[j] == array_S[i]){
+                count++;
+            }
+        }
+        return count;
+        
+    }
+}
