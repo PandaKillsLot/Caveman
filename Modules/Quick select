@@ -1,0 +1,83 @@
+public class Solution {
+    /**
+     * @param list: the information of studnet
+     * @param k: 
+     * @return: return a list
+     */
+    public List<List<String>> topKgpa(List<List<String>> list, int k) {
+        // Write your code here
+        // pq not orignal order
+        // quick select -> what if there is two same GPA
+        //  1 2 1 2 , K = 3, 1 2 2  --> take it all 
+        List<List<String>> ans = new ArrayList<>();
+        if (list == null || list.size() == 0){
+            return ans;
+        }
+        double floor = getFloor(list, k);
+        System.out.println(floor);
+        int index = 0;
+        while (index < list.size() && k > 0){
+            if (Double.valueOf(list.get(index).get(1)) >= floor){
+                ans.add(list.get(index));
+                //k--;
+            }
+            index++;
+        }
+        return ans;
+    }
+    private double getFloor(List<List<String>> list, int k){
+        double[] GPAs = new double[list.size()];
+        int i = 0;
+        for(List<String> l : list){
+            GPAs[i++] = Double.valueOf(l.get(1)); 
+        }
+        // for (int j = 0; j < list.size(); j++){
+        //     System.out.println(" ? " + GPAs[j]);
+        // }
+        return kthLargestElement(k, GPAs);
+    }
+       public static double kthLargestElement(int k, double[] nums) {
+        if (nums == null || nums.length == 0 || k < 1 || k > nums.length){
+            return -1;
+        }
+        return partition(nums, 0, nums.length - 1, k - 1);
+    }
+    
+    private static double partition(double[] nums, int start, int end, int k) {
+        if (start >= end) {
+            return nums[k];
+        }
+        
+        int left = start, right = end;
+        double pivot = nums[(start + end) / 2];
+        //caution
+        while (left <= right) {
+            while (left <= right && nums[left] > pivot) {
+                left++;
+            }
+            while (left <= right && nums[right] < pivot) {
+                right--;
+            }
+            if (left <= right) {
+                swap(nums, left, right);
+                left++;
+                right--;
+            }
+        }
+        // caution
+        if (k <= right) {
+            return partition(nums, start, right, k);
+        }
+        if (k >= left) {
+            return partition(nums, left, end, k);
+        }
+        return nums[k];
+    }    
+    
+    private static void swap(double[] nums, int i, int j) {
+        double tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+    
+}
