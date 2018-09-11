@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 // https://blog.csdn.net/claram/article/details/53410175
+// 主要原因, arraylist的index会在元素被remove后及时调整
 public class ArrayListRemove {
     public static void main(String[] args) {
         ArrayList<String> list = new ArrayList<String>();
