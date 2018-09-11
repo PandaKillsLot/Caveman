@@ -1,0 +1,129 @@
+package hw2;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+// https://blog.csdn.net/claram/article/details/53410175
+public class ArrayListRemove {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("beijing");
+        list.add("shanghai");
+        list.add("shanghai");
+        list.add("guangzhou");
+        list.add("shenzhen");
+        list.add("hangzhou");
+        remove11(list, "shanghai");
+
+    }
+
+    private static void print(List<String> list){
+        for (String item : list) {
+            System.out.println("元素值：" + item);
+        }
+    }
+
+    /*
+     * 错误:删除后size随机变更
+     */
+    public static void remove11(List<String> list, String target){
+        int size = list.size();
+        for(int i = 0; i < size; i++){
+            String item = list.get(i);
+            if(target.equals(item)){
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+    /*
+     * 错误:这个index上的值被删除后,后面的 index会变, 也就跳过了扫描
+     */
+    public static void remove12(List<String> list, String target){
+        for(int i = 0; i < list.size(); i++){
+            String item = list.get(i);
+            if(target.equals(item)){
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+    /*
+     * 正确(因为删了index不会变)
+     */
+    public static void remove13(List<String> list, String target){
+        int size = list.size();
+        for(int i = size - 1; i >= 0; i--){
+            String item = list.get(i);
+            if(target.equals(item)){
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+    /*
+     * 正确(因为删了数据不会变). 而且 14 和13的性能没有区别, 不用重复计算list.size()哦
+     */
+    public static void remove14(List<String> list, String target){
+        for(int i = list.size() - 1; i >= 0; i--){
+            String item = list.get(i);
+            if(target.equals(item)){
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+
+    /*
+     * 错误, for each 是对iterator的简写.删除会导致 modCount != expectedModCount
+     */
+    public static void remove21(List<String> list, String target){
+        for(String item : list){
+            if(target.equals(item)){
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+
+    /*
+     * 正确
+     */
+    public static void remove22(ArrayList<String> list, String target) {
+        final CopyOnWriteArrayList<String> cowList = new CopyOnWriteArrayList<String>(list);
+        for (String item : cowList) {
+            if (item.equals(target)) {
+                cowList.remove(item);
+            }
+        }
+        print(cowList);
+    }
+
+    /* 
+     * 错误 同 21
+     */
+    public static void remove31(List<String> list, String target){
+        Iterator<String> iter = list.iterator();
+        while (iter.hasNext()) {
+            String item = iter.next();
+            if (item.equals(target)) {
+                list.remove(item);
+            }
+        }
+        print(list);
+    }
+    /*
+     * 正确
+     */
+    public static void remove32(List<String> list, String target){
+        Iterator<String> iter = list.iterator();
+        while (iter.hasNext()) {
+            String item = iter.next();
+            if (item.equals(target)) {
+                iter.remove();
+            }
+        }
+        print(list);
+    }
+
+}
