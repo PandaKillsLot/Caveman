@@ -1,0 +1,107 @@
+public class Solution {
+    /**
+    * 433. Number of Islands
+    * https://www.lintcode.com/problem/number-of-islands/description?_from=ladder&&fromId=1
+    * pro: 矩阵里求1围城的岛屿个数
+    * tag: bfs, uf
+    * sol: bfs / uf
+    * mis:  
+    * fol: 动态生成岛屿
+    * oth:
+    */
+    /**
+     * @param grid: a boolean 2D matrix
+     * @return: an integer
+     */
+     // if I am an island, then search left and up
+     // Union Find的实质是，只要两个先连在一起了，后面一个加进来，怎么都是一个入口，无论以谁为基准（只要你做了路径压缩）
+     // A->B->C 如果每次合并以后面的数为基准，那么A的father其实存的是B， UF除非最后更新一遍，不然father存的不是最总的点。因此，独立写个UF class似乎是个不错的选择
+    public int numIslands(boolean[][] grid) {
+        // write your code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        int row = grid.length;
+        int col = grid[0].length;
+        //  number of cel =  col * (x - 1) + y
+        // entrance is left top, so append newly found cude as a child node
+        // 
+        int father[] = new int [row * col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (!grid[i][j]) {
+                    father[col * i + j] = -1;
+                } else {
+                    father[col * i + j] = col * i + j;
+                }
+            }
+        }
+        // for (int i = 0; i < father.length; i++) {
+        //   System.out.println("???" + father[i]);
+        // }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (!grid[i][j]) {
+                    continue;
+                }
+                search(grid, i, j, father);
+            }
+        }
+        
+        // for (int i = 0; i < father.length; i++) {
+        //   System.out.println("???" + father[i]);
+        // }
+        System.out.println("xxx" + find(father, 0));
+        for (int i = 1; i < father.length; i++) {
+            if (father[i] != -1) {
+                find(father, i);
+            }
+        }
+        Arrays.sort(father);
+        int count = 0;
+        if (father[0] != -1) {
+            count++;
+        }
+        for (int i = 1; i < father.length; i++) {
+            if (father[i] != father[i - 1]) {
+                count++;
+            }
+        }
+        return father.length == 1 && grid[0][0] ? 1 : count;
+    }
+    private void search(boolean[][] grid, int i, int j, int father[]) {
+        int row = grid.length;
+        int col = grid[0].length;
+        int[] dx = {0, -1, 0, 1};
+        int[] dy = {-1, 0, 1, 0};
+        for (int k = 0; k < 4; k++) {
+            if (i + dx[k] >= 0 && i + dx[k] < row && j + dy[k] >= 0 && j + dy[k] < col 
+                && grid[i + dx[k]][j + dy[k]]) {
+                union(father, i, j, i + dx[k], j + dy[k], row, col);
+            }
+        }
+    }
+    private void union(int[] father, int i, int j, int m, int n, int row, int col) {
+        union(father, col* i + j, col * m + n);
+    }
+    private void union(int[] father, int i, int j){
+        int root_i = find(father, i);
+        int root_j = find(father, j);
+        if (root_i != root_j && root_i != - 1&& root_j != - 1) {
+             father[root_i] = root_j;
+        }
+    }
+    private int find(int[] father, int i) {
+        if (father[i] == -1) {
+            return -1;
+        }
+        if (father[i] == i) {
+            return i;
+        }
+        // luji yasuo
+        father[i] = find(father, father[i]);
+        
+        return father[i];
+    }
+    
+}
