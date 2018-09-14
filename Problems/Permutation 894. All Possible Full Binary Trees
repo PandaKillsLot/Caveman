@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+/**
+* 894. All Possible Full Binary Trees
+* https://leetcode.com/problems/all-possible-full-binary-trees/description/
+* pro: 给number, 求组成多少个树, 这些树的每个节点, 有 0或者 2个子节点
+* tag: combination, dfs, memo search
+* sol: dfs + 记忆化搜索 : 相当于每次数 左边分配几个, 右边分配几个节点
+* mis:  
+* fol:
+* oth:
+*/
+class Solution {
+    HashMap<Integer, List<TreeNode>> map;
+    public List<TreeNode> allPossibleFBT(int N) {
+       map = new HashMap<>();
+       return helper(N);
+    }
+    public List<TreeNode> helper(int N) {
+       // TreeNode root = new TreeNode(0);
+       if (map.containsKey(N)){
+           return map.get(N);
+       }
+        
+       List<TreeNode> ans = new ArrayList<TreeNode>();
+       if (N == 1){
+            TreeNode root = new TreeNode(0);
+            
+            ans.add(root);
+           return ans;
+        }
+        
+       int leftNumber = 1;
+       while (leftNumber <= N - 2){
+           
+           List<TreeNode> lefts =  helper(leftNumber);
+           List<TreeNode> rights = helper(N - 1 - leftNumber);
+           
+           for (TreeNode left : lefts){
+               for (TreeNode right : rights){
+                    TreeNode root = new TreeNode(0);
+                    root.left = left;
+                    root.right = right;
+                    ans.add(root);
+               }
+           }
+           leftNumber += 2;
+       }
+       map.put(N, ans);
+       return ans;
+    }
+    
+}
