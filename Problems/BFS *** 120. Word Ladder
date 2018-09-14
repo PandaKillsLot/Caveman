@@ -1,0 +1,77 @@
+public class Solution {
+    /**
+    * 120. Word Ladder
+    * https://www.lintcode.com/problem/word-ladder/description
+    * pro: 给你一串单词, 一个单词和一个目标单词, 求最短几步可以到目标单词
+    * tag: bfs, search
+    * sol: 1) 这是个搜索问题 
+    *      2) 建图 -> 暴力枚举所有的邻居(邻居少check邻居, 邻居多暴力变更) 
+    *      3) bfs遍历
+    * mis:  
+    * fol:
+    * oth:
+    */
+    /**
+      * @param start, a string
+      * @param end, a string
+      * @param dict, a set of string
+      * @return an integer
+      */
+    public int ladderLength(String start, String end, Set<String> dict) {
+        // write your code here
+        // basic idea : BFS to find the slowest path
+        if (dict == null || dict.size() == 0) {
+            return 0;
+        }
+        if (start.equals(end)) {
+            return 1;
+        }
+        dict.add(end);
+        HashSet<String> set = new  HashSet<String>();
+        Queue<String> queue = new LinkedList<String>();
+        
+        set.add(start);
+        queue.offer(start);
+        int distance = 1;
+        
+        while (!queue.isEmpty()){
+            distance++;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String word = queue.poll();
+                for (String nextWord : getNextWord(word, dict)) {
+                    if (set.contains(nextWord)) {
+                        continue;
+                    }
+                    if (nextWord.equals(end)){
+                        return distance;
+                    } 
+                    
+                    set.add(nextWord);
+                    queue.add(nextWord);
+                }
+            }
+        }
+        return 0;
+    }
+    private ArrayList<String> getNextWord(String word, Set<String> dict){
+        ArrayList<String> next = new ArrayList<String>();
+        for (int i = 0; i < word.length(); i++){
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (c == word.charAt(i)){
+                    continue;
+                }
+                String newWord = replace(word, i, c);
+                if (dict.contains(newWord)){
+                    next.add(newWord);
+                }
+            }
+        }
+        return next;
+    }
+    private String replace(String word, int i, char c){
+        char[] chars = word.toCharArray();
+        chars[i] = c;
+        return   new String(chars);    
+    }
+}
