@@ -1,0 +1,87 @@
+public class Solution {
+/**
+* 616. Course Schedule II
+* https://www.lintcode.com/problem/course-schedule-ii/description?_from=ladder&&fromId=1
+* pro:给你课表和先修要求, 求先修课顺序
+* tag: topo, bst
+* sol: topo
+* mis:  
+* fol:
+* oth:
+*/
+    /**
+     * @param numCourses a total of n courses
+     * @param prerequisites a list of prerequisite pairs
+     * @return the course order
+     */
+   public int[] findOrder(int numCourses, int[][] prerequisites) {
+        // Write your code here
+        
+        int[] ans = new int[numCourses]; 
+        
+        if (numCourses == 1){
+            return ans;
+        }
+        // if (prerequisites.length == 1){
+        //     ans[0] = prerequisites[0][1];
+        //     ans[1] = prerequisites[0][0];
+        //     return ans;
+        // }
+        Map<Integer, ArrayList<Integer>> map = new HashMap<Integer, ArrayList<Integer>>();
+        // 加map
+        for (int i = 0; i < prerequisites.length; i++) {
+            if (!map.containsKey(prerequisites[i][1])) {
+                map.put(prerequisites[i][1], new ArrayList<Integer>());
+            }
+            map.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        }
+        
+        // 算入度
+        Map<Integer, Integer> degree = new HashMap<Integer, Integer>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            if (!degree.containsKey(prerequisites[i][0])) {
+                degree.put(prerequisites[i][0], 1);
+                
+            } else {
+                degree.put(prerequisites[i][0], degree.get(prerequisites[i][0]) + 1);
+                
+            }
+        }
+        int count = 0;
+        int start = -1;
+        //ans[0] = start;
+        int i = 0; 
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int j = 0; j < numCourses; j++) {
+            if (!degree.containsKey(j)){
+            	start = j;
+                ans[i] = j;
+                queue.offer(ans[i]);
+                i++;
+                count++;
+            }
+        }
+        if (start == -1){
+            return new int[0];
+        }
+        while (!queue.isEmpty()) {
+            Integer temp = queue.poll();
+            if (map.get(temp) == null) {
+                continue;
+            }
+            for (Integer number : map.get(temp)) {
+                degree.put(number ,degree.get(number) - 1);
+                if (degree.get(number) == 0) {
+                    ans[i] = number;
+                    count++;
+                    i++;
+                    queue.offer(number);
+                }
+            }
+        }
+        if (count < numCourses) {
+            return new int[0];
+        }
+        return ans;
+    }
+}
