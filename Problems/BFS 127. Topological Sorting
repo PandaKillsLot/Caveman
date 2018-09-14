@@ -1,0 +1,72 @@
+/**
+ * Definition for Directed graph.
+ * class DirectedGraphNode {
+ *     int label;
+ *     ArrayList<DirectedGraphNode> neighbors;
+ *     DirectedGraphNode(int x) { label = x; neighbors = new ArrayList<DirectedGraphNode>(); }
+ * };
+ */
+public class Solution {
+    /**
+     * @param graph: A list of Directed graph node
+     * @return: Any topological order for the given graph.
+     */
+     
+    /**
+    * 127. Topological Sorting
+    * https://www.lintcode.com/problem/topological-sorting/description
+    * pro: 给临接链表,求拓扑排序
+    * tag: bfs, topo
+    * sol: 1)找到入度为0的点 
+    *      2) 数入度 
+    *      3) 从入度为0的开始遍历 
+    *      4)一个出去了, 邻居入度减一
+    *      5)把邻居里入度为0的放进去
+    * mis:  
+    * fol:
+    * oth:
+    */
+    public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+        // write your code here
+        // corner case
+        if (graph == null || graph.size() == 0) {
+            return null;
+        }
+        // initialization
+        ArrayList<DirectedGraphNode> result = new ArrayList<DirectedGraphNode>();
+        HashMap<DirectedGraphNode, Integer> map = new HashMap<DirectedGraphNode, Integer>();
+        // 有向图的邻居只有向下关系的
+        //iterates the graph and calculate in-degree
+        for (DirectedGraphNode node : graph) {
+            for (DirectedGraphNode neigh : node.neighbors) {
+                if (map.containsKey(neigh)) {
+                    map.put(neigh, map.get(neigh) + 1);
+                } else {
+                    map.put(neigh, 1);
+                }   
+            }
+        }
+        
+        Queue<DirectedGraphNode> queue = new LinkedList<DirectedGraphNode>();
+        // 入度为0的点没有被放进去
+        //find the zero in-degree node
+        for (DirectedGraphNode node : graph) {
+            if (!map.containsKey(node)) {
+                queue.offer(node);
+                result.add(node);
+            }
+        }
+        // BSF through all the graph
+        while (!queue.isEmpty()) {
+            DirectedGraphNode node = queue.poll();
+            for (DirectedGraphNode neigh : node.neighbors) {
+                map.put(neigh, map.get(neigh) - 1);
+                if (map.get(neigh) == 0) {
+                    queue.offer(neigh);
+                    result.add(neigh);
+                }
+            }
+        }
+        return result;
+    }
+}
