@@ -1,0 +1,68 @@
+public class Solution {
+    
+/**
+* 615. Course Schedule
+* https://www.lintcode.com/problem/course-schedule/description?_from=ladder&&fromId=1
+* pro: 给你课表和先修要求, 问你能不能上完
+* tag: topo, bfs
+* sol: topo
+* mis:  
+* fol:
+* oth:
+*/
+    
+    /*
+     * @param numCourses: a total of n courses
+     * @param prerequisites: a list of prerequisite pairs
+     * @return: true if can finish all courses or false
+     */
+    // class Course {
+    //     int number;
+    //     List<Integer> preList;
+    //     public Course (int number){
+    //         this.number = number;
+    //         preList = new ArrayList<Integer>();
+    //     }
+    // }
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+       Map<Integer, ArrayList<Integer>> map = new HashMap<Integer, ArrayList<Integer>>();
+        Map<Integer, Integer> degree = new HashMap<Integer, Integer>();
+       
+        for (int i = 0; i < numCourses; i++) {
+            map.put(i, new ArrayList<Integer>());
+            degree.put(i, 0);
+        }
+        
+        for (int i = 0; i < prerequisites.length; i++) {
+            //neigh
+            map.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            //indegree
+            degree.put(prerequisites[i][0], degree.get(prerequisites[i][0]) + 1);
+            
+        }
+        int count = 0;
+       
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int k = 0; k < numCourses; k++) {
+            if (degree.get(k) == 0) {
+                queue.offer(k);
+            }
+        }
+        while (!queue.isEmpty()) {
+            Integer temp = queue.poll();
+            count++;
+            
+            if (map.get(temp) == null) {
+                continue;
+            }
+            for (Integer number : map.get(temp)) {
+                degree.put(number ,degree.get(number) - 1);
+                if (degree.get(number) == 0) {
+                    queue.offer(number);
+                }
+            }
+        }
+        
+        return count >= numCourses;
+    }
+}
