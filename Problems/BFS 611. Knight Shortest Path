@@ -1,0 +1,83 @@
+/**
+ * Definition for a point.
+ * class Point {
+ *     int x;
+ *     int y;
+ *     Point() { x = 0; y = 0; }
+ *     Point(int a, int b) { x = a; y = b; }
+ * }
+ */
+
+public class Solution {
+    /**
+    * 611. Knight Shortest Path
+    * https://www.lintcode.com/problem/knight-shortest-path/description?_from=ladder&&fromId=1
+    * pro: 求马在棋盘上到目标点的最短距离
+    * tag: bfs(可以双向)
+    * sol: bfs
+    * mis:  
+    * fol:有障碍怎么办, 障碍点不进入下一轮BFS
+    * oth:
+    */
+    /**
+     * @param grid: a chessboard included 0 (false) and 1 (true)
+     * @param source: a point
+     * @param destination: a point
+     * @return: the shortest path
+     */
+     
+    int[] dx = {1, 1, -1, -1, 2, 2, -2, -2};
+    int[] dy = {2, -2, 2, -2, 1, -1, 1, -1};
+    boolean[][] grid;
+    int min = Integer.MAX_VALUE;
+    int des_x;
+    int des_y;
+    public int shortestPath(boolean[][] grid, Point source, Point destination) {
+        // write your code here
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        if (grid[0] == null || grid[0].length == 0) {
+            return 0;
+        }
+        this.grid = grid;
+        this.des_x = destination.x;
+        this.des_y = destination.y;
+        search_grid(source.x, source.y, 0);
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+    private void search_grid(int destination_x, int destination_y, int step){
+        if (destination_x < 0 || destination_x >= grid.length
+            || destination_y < 0 || destination_y >= grid[0].length) {
+            return;
+        }
+        if (grid[destination_x][ destination_y]) {
+            return;
+        }
+        // if (check_grid(source_x, source_y, destination_x, destination_y)) {
+        //     return;
+        // }
+        if (destination_x == des_x && destination_y == des_y){
+            min = Math.min(step, min);
+            return;
+        }
+        grid[destination_x][destination_y] = true;
+        for (int k = 0; k < 8; k++) {
+            search_grid(destination_x + dx[k], destination_y + dy[k], step + 1);
+        }
+        grid[destination_x][destination_y] = false;
+    }
+    // private boolean check_grid(int x, int y, int jump_x, int jump_y){
+    //     for (int i = x + 1; i <= jump_x; i++) {
+    //         for (int j = y + 1; j <= jump_y; j++){
+    //             if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) {
+    //                 return false;
+    //             }
+    //             if (grid[i][j]) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+}
