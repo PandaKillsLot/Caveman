@@ -1,0 +1,40 @@
+class Solution {
+/**
+* 881. Boats to Save People
+* https://leetcode.com/problems/boats-to-save-people/description/
+* pro: 一个船, 一次可以载2 人, 但体重要不超过limit, 问起码几次
+* tag: Two p
+* sol: two p, 从后往前数, 胖子能搭上一个瘦子是一个
+* mis:  
+* fol:
+* oth:
+*/
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        int start = 0;
+        int end = people.length - 1;
+        int rescued = 0;
+        int total = people.length;
+        //boolean[] isRescued = new boolean[];
+        
+        while (start <= end){
+            int sum = start == end ? people[start] : people[start] + people[end] ;
+            if (sum > limit){
+                end--;
+            } else {
+                rescued++;
+                if (start == end){
+                    total--;
+                } else {
+                    total = total - 2;
+                   
+                }
+                end--;
+                start++;
+            }
+            
+        }
+        
+        return rescued + total;
+    }
+}
