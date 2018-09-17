@@ -1,3 +1,85 @@
+class Solution II{
+    public String nextClosestTime(String time) {
+        int[] nextTime = new int[4];
+        int[] digits = new int[4];
+        int j = 0;
+        for (int i = 0; i < time.length(); i++){
+            if (time.charAt(i) == ':'){
+                continue;
+            }
+            nextTime[j] = time.charAt(i) - '0';
+            digits[j] = time.charAt(i) - '0';
+            j++;
+        }
+        Arrays.sort(digits);
+        HashMap<Integer, Integer> rankNumber = new HashMap<>();
+        HashMap<Integer, Integer> numberRank = new HashMap<>();
+        
+        for (int i = 0; i < 4; i++){
+            rankNumber.put(i, digits[i]);
+            numberRank.put(digits[i], i);
+        }
+        
+        
+        // minute - ones
+        if (isFound(nextTime, 3, 9, rankNumber,numberRank)){
+            return getString(nextTime);
+        } else {
+            nextTime[3] = rankNumber.get(0);
+        }
+        // minute - tens
+        if (isFound(nextTime, 2, 5, rankNumber,numberRank)){
+            return getString(nextTime);
+        } else {
+            nextTime[2] = rankNumber.get(0);
+        }
+        // hours-ones
+        if (nextTime[0] != 2){
+            if (isFound(nextTime, 1, 9, rankNumber,numberRank)){
+                return getString(nextTime);
+            } else {
+                nextTime[1] = rankNumber.get(0);
+            }
+        } else {
+            if (isFound(nextTime, 1, 3, rankNumber,numberRank)){
+                return getString(nextTime);
+            } else {
+                nextTime[1] = rankNumber.get(0);
+            }
+        }
+        
+        return getString(nextTime);
+    }
+    
+    private boolean isFound(int[] nextTime, int pos, int limit,
+                            HashMap<Integer, Integer> rankNumber, 
+                            HashMap<Integer, Integer> numberRank){
+       
+        int i = numberRank.get(nextTime[pos]) + 1;
+        
+        while (i <= 3){
+            if (rankNumber.get(i) > nextTime[pos] && rankNumber.get(i) <= limit){
+                nextTime[pos] = rankNumber.get(i);
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+    
+    private String getString(int[] nextTime){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 4; i++){
+            sb.append(nextTime[i]);
+            if (i == 1){
+                sb.append(':');
+            }
+        }
+        return sb.toString();
+    }
+}
+
+
 class Solution {
     /**
     *681. Next Closest Time
