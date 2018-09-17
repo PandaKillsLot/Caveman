@@ -1,0 +1,54 @@
+public class Solution {
+    /**
+    * 1554. LastTime Norepeat
+    * https://www.lintcode.com/problem/last-closest-time/description
+    * pro: 给你一个时间, 求后一个最近的时间
+    * tag: Math
+    * sol: 分针往后走一步, 走到个不重复的
+    * mis:  
+    * fol:
+    * oth:
+    */
+    /**
+     * @param time: 
+     * @return: return a string represents time
+     */
+    public String lastTime(String time) {
+        // Write your code here
+        if (time == null || time.length() != 5){
+            return "-1";
+        }
+        int minutes = Integer.valueOf(time.split(":")[1]);
+        int hours = Integer.valueOf(time.split(":")[0]);
+        // mistake the input could be invalid
+        if (minutes >= 60 || hours >= 24){
+            return "-1";
+        }
+        while (true){
+            minutes--;
+            if (minutes < 0){
+                hours--;
+                minutes = 59;
+            }
+            if (hours < 0){
+                hours = 23;
+            } 
+            if (isValid(minutes, hours)){
+                break;
+            }
+        }
+           
+        
+        return String.valueOf(hours / 10) + String.valueOf(hours % 10) 
+               + ":" + String.valueOf(minutes / 10) + String.valueOf(minutes % 10);
+    }
+    
+    private boolean isValid(int minutes, int hours){
+        Set<String> set = new HashSet<>();
+        set.add(String.valueOf(hours / 10));
+        set.add(String.valueOf(hours % 10));
+        set.add(String.valueOf(minutes / 10));
+        set.add(String.valueOf(minutes % 10));
+        return set.size() == 4;
+    }
+}
