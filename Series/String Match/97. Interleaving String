@@ -1,0 +1,127 @@
+class Solution {
+    /**
+    * 97. Interleaving String
+    * https://leetcode.com/problems/interleaving-string/description/
+    * pro: 问两个string能不能拼成一个String
+    * tag: String, dp, 双序列
+    * sol: dp
+    * mis: 那个字符串横着, 哪个竖着搞不清, 然后对应s3哪个串搞不清
+    * fol:
+    * oth:
+    */
+    
+    
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1 == null && s2 == null && s3 == null){
+            return true;
+        }
+        if (s1 == null && s2.equals(s3)){
+            return true;
+        }
+        if (s2 == null && s1.equals(s3)){
+            return true;
+        }
+        if (s1 == null || s2 == null || s3 == null || s1.length() + s2.length() != s3.length()){
+            return false;
+        }
+        // dp[i][j]: could s1.substring(0, i) & could s1.substring(0, j) == could s3.substring(0, i + j)
+        // dp[0][0] 的意义是让后面的计算不要越界
+        // 初始化第一行第一列
+        // 普通顺序
+        boolean[][] dp = new boolean[s1.length() + 1][s2.length() + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= s1.length(); i++){
+            if (s1.charAt(i - 1) == s3.charAt(i - 1)){
+                dp[i][0] = true;
+            } else {
+                break;
+            }
+        }
+        for (int i = 1; i <= s2.length(); i++){
+            if (s2.charAt(i - 1) == s3.charAt(i - 1)){
+                dp[0][i] = true;
+            } else {
+                break;
+            }
+        }
+        // dp[i][j] = (s1[i - 1]s2[j] + s1[i]) || (s1[i]s2[j - 1] + s2[j])
+        for (int i = 1; i <= s1.length(); i++){
+            for (int j = 1; j <= s2.length(); j++){
+                dp[i][j] = (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) // ???
+                    || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+            }
+        }
+        // for (int i = 0; i <= s1.length(); i++){
+        //     for (int j = 0; j <= s2.length(); j++){
+        //        System.out.print(dp[i][j] + " ");
+        //     }
+        //     System.out.println();
+        // }
+        
+        
+        return dp[s1.length()][s2.length()];
+    }
+    
+    
+    
+    
+    // 由s3返过去校验s1和s2, 利用的合并双序列
+    // 加上了记忆化搜索
+    HashMap<String, Boolean> map;
+    public boolean isInterleaveIII(String s1, String s2, String s3) {
+        map = new HashMap<String, Boolean>();
+        return isFrom (s1, 0, s2, 0, s3, 0);
+    }
+    private boolean isFrom(String s1, int pos1, String s2, int pos2, String s3, int pos3){
+        String p = String.valueOf(pos1) + "+" + String.valueOf(pos2) + "+" + String.valueOf(pos3);
+        if (map.containsKey(p)){
+            return map.get(p);
+        }
+        if (pos3 == s3.length() && pos1 >= s1.length() && pos2 >= s2.length()){
+            return true;
+        }
+        boolean left = false;
+        boolean right = false;
+        boolean leftWorks = false;
+        boolean rightWorks = false;
+        if (pos1 < s1.length() && pos3 < s3.length() && s1.charAt(pos1) == s3.charAt(pos3)){
+            left = true;
+            leftWorks = isFrom (s1, pos1 + 1, s2, pos2, s3, pos3 + 1);
+        }
+        if (pos2 < s2.length() && pos3 < s3.length() && s2.charAt(pos2) == s3.charAt(pos3)){
+            right = true;
+            rightWorks = isFrom (s1, pos1, s2, pos2 + 1, s3, pos3 + 1);
+        }
+        boolean ans = (left && leftWorks) || (right && rightWorks);
+        
+        map.put(p, ans);
+        return (left && leftWorks) || (right && rightWorks);
+    }
+    
+    // 枚举全部的可能排列, 超时了
+    public boolean isInterleaveII(String s1, String s2, String s3) {
+        HashSet<String> set = new HashSet<String>();
+        allInterLeave(s1, 0, s2, 0, set, "");
+        //System.out.println("?");
+        // for (String s : set){
+        //     System.out.println(s);
+        // }
+        return set.contains(s3);
+    }
+    private void allInterLeave(String s1, int pos1, String s2, int pos2, HashSet<String> set, String buffer){
+        //System.out.println("pos1 " + pos1 + " pos2 " + pos2 + " buffer " + buffer);
+        if (pos1 == s1.length() && pos2 == s2.length()){
+            set.add(buffer);
+            return;
+        }
+        if (pos1 > s1.length() || pos2 > s2.length()){
+            return;
+        }
+        if (pos1 < s1.length()){
+            allInterLeave(s1, pos1 + 1, s2, pos2, set, buffer + s1.charAt(pos1));
+        }
+        if (pos2 < s2.length()){
+            allInterLeave(s1, pos1, s2, pos2 + 1, set, buffer + s2.charAt(pos2));
+        }
+    }
+}
