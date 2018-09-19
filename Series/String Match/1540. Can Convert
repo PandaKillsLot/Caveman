@@ -1,0 +1,90 @@
+public class Solution {
+    /**
+    * 1540. Can Convert
+    * https://www.lintcode.com/problem/can-convert/description
+    * pro: 可不可以删除字符, 使得A串变成B串
+    * tag: String
+    * sol: strstr或者dp做String状态
+    * mis: 
+    * fol:
+    * oth:
+    */
+    /**
+     * @param s: string S
+     * @param t: string T
+     * @return: whether S can convert to T
+     */
+    public boolean canConvert(String s, String t) {
+        // Write your code here
+        if (s == null &&t == null){
+            return true;
+        }
+        if (s == null){
+            return false;
+        }
+        if (t == null){
+            return false;
+        }
+        
+        int i = 0;
+        int j = 0;
+        while (j < t.length() && i < s.length()) {
+            if (t.charAt(j) == s.charAt(i)) {
+                i++;
+                j++;
+            } else {
+                i++;
+            }
+        }
+        return j == t.length();
+    
+    }
+    /**
+     * dp[i][j] s的前j个字符可以被删除成t的前t个么
+     * dp[i][j] = dp[i][j - 1] || dp[i - 1][j - 1] && s.charAt(j - 1) == t.charAt(i - 1)
+     * 要么dp[i][j] s的前j个字符可以被删除成t的前t个,接着删就好
+     * 要么当前两个字符相同, 这两个字符都不算,前面可以合成.
+     * 初始化第一行第一列, 以保证 [i - 1][j - 1]不越界
+     * 顺序计算
+    */
+    public boolean canConvertII(String s, String t) {
+        // Write your code here
+        if (s == null &&t == null){
+            return true;
+        }
+        if (s == null){
+            return false;
+        }
+        if (t == null){
+            return false;
+        }
+        // caution !
+        boolean[][] dp = new boolean[t.length() + 1][s.length() + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= t.length(); j++){
+            dp[j][0] = false;    
+        } 
+        for (int i = 1; i <= s.length(); i++){
+            dp[0][i] = true;
+        }
+        for (int i = 1; i <= t.length(); i++){
+            for (int j = 1; j <= s.length(); j++){
+                if (dp[i][j - 1] || dp[i - 1][j - 1] && s.charAt(j - 1) == t.charAt(i - 1)){
+                    dp[i][j] = true;
+                }
+            } 
+        }
+        
+        
+        //  for (int i = 0; i <= t.length(); i++){
+        //     for (int j = 0; j <= s.length(); j++){
+                
+        //             System.out.print(dp[i][j] + " ");
+                
+        //     } 
+        //      System.out.println(" ");
+        // }    
+        
+        return dp[t.length()][s.length()];
+    }
+}
