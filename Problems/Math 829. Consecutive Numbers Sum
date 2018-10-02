@@ -1,0 +1,56 @@
+class Solution {
+/**
+* 829. Consecutive Numbers Sum
+* https://leetcode.com/problems/consecutive-numbers-sum/description/
+* pro: 一个数, 求能被几个连续自然数表示的方案
+* tag: Math
+* sol: 从通向和公式最后推出, 只要 (2n - j ^2) % j 就好
+* mis:  
+* fol:
+* oth:
+*/
+    // (2 * i + j - 1) * j == 2 * N
+    //-- > i = (2n - j ^2) / j --> 可以整除 
+       public int consecutiveNumbersSum(int N) {
+        int ans = 1;
+        for (int i = 2; i * (i + 1) / 2 <= N; ++i) {
+            if ((N - i * (i + 1) / 2) % i == 0) ++ans;
+        }
+        return ans;
+    }
+    public int consecutiveNumbersSumI(int N) {
+
+//         int[] array = new int[N / 2 + 1];
+//         int step = 1;
+//         for (int i = 0; i < array.length; i++){
+//             array[i] = step++; 
+            
+//         }
+        if (N == 1){
+            return 1;
+        }
+        if (N == 2){
+            return 1;
+        }
+       //System.out.println(" ? " + (2 * 2 + 2) * 2 / 2);
+        //int j = 1;
+        int sum = 0;
+        int count = 0;
+        int limit =  N / 2 + 1;
+        for (int i = 1; i < limit; i++){
+            int j = 0;
+            while (j < limit && (2 * i + j - 1) * j < 2 * N){
+                j++;
+            }
+            //System.out.println(" ? " + (2 * i + j - 1) * j / 2);
+            if ((2 * i + j - 1) * j / 2 == N){
+                //System.out.println(" ? ...");
+                count++;
+            }
+        }// 自己也算
+        if (N > N / 2 + 1){
+            count++;
+        }
+        return count;
+    }
+}
