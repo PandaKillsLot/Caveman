@@ -1,0 +1,132 @@
+class Solution {
+    // 可以局部优化先去掉match的pair
+
+/**
+* 465. Optimal Account Balancing
+* https://leetcode.com/problems/optimal-account-balancing/description/
+* pro: 一群人互相转账, 求最小的交易次数
+* tag: Math
+* sol: failure version: 第一反应是有向图, 然后找环, 然后clear...太复杂放弃了   
+       正解! 先把自己收支平衡的删除, 然后dfs出可行解
+             dfs用了memo剪枝 -> 只有分治可以用memo
+             memo用了stringFy
+             还可以先把成pair的处理掉
+             
+* mis:  
+* fol:
+* oth:
+*/    
+
+    public int minTransfers(int[][] transactions) {
+        HashMap<Integer, Integer> graph = new HashMap<>();
+        HashMap<String, Integer> memo = new HashMap<>();
+        // build graph
+        for (int[] transaction : transactions){
+            if (!graph.containsKey(transaction[0])){
+                graph.put(transaction[0], 0);
+            }
+            if (!graph.containsKey(transaction[1])){
+                graph.put(transaction[1], 0);
+            }
+            
+            graph.put(transaction[1], graph.get(transaction[1]) + transaction[2]);
+            graph.put(transaction[0], graph.get(transaction[0]) - transaction[2]);    
+        }
+        ArrayList<Integer> balance = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : graph.entrySet()){
+            // System.out.println(entry.getKey());
+            // System.out.println(entry.getValue());
+            int node = entry.getValue();
+            if (node != 0){
+                balance.add(node);
+            }
+           
+        }
+        
+        
+        return helper(balance, memo); 
+    }
+    private int helper(ArrayList<Integer> balance, HashMap<String, Integer> memo){
+        String s = stringfy(balance);
+        if (memo.containsKey(s)){
+            return memo.get(s);
+        }
+        
+
+        int i = 0;
+        while (i < balance.size() && balance.get(i) == 0){
+            i++;
+        }
+        if (i == balance.size()){
+            return 0;
+        }
+        int step = Integer.MAX_VALUE;
+        for (int j = i + 1; j < balance.size(); j++){
+            if (balance.get(i) * balance.get(j) < 0){
+                int prevA = balance.get(i);
+                int prevB = balance.get(j);
+                balance.set(i, 0);
+                balance.set(j, prevB + prevA);
+
+                step = Math.min(helper(balance, memo), step);
+                    
+                balance.set(i, prevA);
+                balance.set(j, prevB);
+                
+            }
+            
+        }
+        memo.put(s, step + 1);
+        return step + 1;
+    }
+        
+//         for (int i = 0; i < balance.size(); i++){
+//             if (balance.get(i) == 0){
+//                 continue;
+//             }
+//             for (int j = i + 1; j < balance.size(); j++){
+//                 if (balance.get(i) * balance.get(j) < 0){
+//                     prevA = balance.get(i);
+//                     prevB = balance.get(j);
+                    
+//                     balance.set(i, 0);
+//                     balance.set(j, prevB + prevA);
+//                     int left = size;
+//                     left--;
+//                     if (balance.get(j) == 0){
+//                         left--;
+//                     }
+                    
+//                     helper(balance, time + 1, left);
+                    
+//                     balance.set(i, prevA);
+//                     balance.set(j, prevB);
+//                 }
+//             }
+//         }
+        
+    private String stringfy(ArrayList<Integer> list){
+        StringBuilder sb = new StringBuilder();
+        for (Integer number : list){
+            sb.append(number);
+        }
+        return sb.toString();
+    }
+    private String sum(ArrayList<Integer> list){
+        int sum = 0;
+        for (Integer number : list){
+            sum += number;
+        }
+        return String.valueOf(sum);
+    }
+   
+}
+                
+                
+                
+                
+                
+                
+                
+                
+                
