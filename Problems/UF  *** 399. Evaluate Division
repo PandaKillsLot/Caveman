@@ -1,0 +1,154 @@
+class Solution {
+    /**
+    *399. Evaluate Division
+    *https://leetcode.com/problems/evaluate-division/description/
+    *pro: 给你一堆变量的比例,求任意两个变量之间的比例
+    *
+    *
+    *
+    *other: 
+    *对于所有的 dfs 求组合问题来说
+    * 首先,这是一个问你结果的问题, 并且结果是有序生成的
+    * 根据这些结果,你可以由此生成一个图.(这也解释了为什么substring, subarray不可以用dfs, bfs来做,本质上这些题目无法
+    * 生成图)
+    * 找所有的答案, 就是找所有叶子节点.
+    * 所以 dfs和 bfs,其实只是相关的方法而已.
+    * 
+    *思路是 构图, 搜索
+    *通用的dfs解法可以做,因为图不用构建也知道怎么走.
+    *很少用bfs, 因为bfs是用queue保存,每次只能存一个值,而dfs利用递归, 反复调用接口.
+    
+    * 图的解法一共三种
+    * dfs 
+    * bfs 
+    * uf  压缩后的图,只留是否连接的关系
+    */
+    
+    class UF{
+        int[] father;
+        double[] value;
+        //int individual;
+        
+        public UF(int capacity){
+            father = new int[capacity];
+            value = new double[capacity];
+            for (int i = 0; i < father.length; i++){
+                father[i] = i;
+                value[i] = 1;
+            }
+        }
+        public int find (int a){
+            if (father[a] == a){
+                return father[a];
+            }
+            // important
+            value[a] *= value[father[a]];  //  a->c-d 和 e->g->z相连的时候
+            father[a] = find(father[a]);
+            //    value[a] *= value[father[a]]; 
+            return father[a]; 
+        }
+        public void union(int a, int b, double val){
+            int rootA = find(a);
+            int rootB = find(b);
+            
+            if (rootA != rootB){
+                father[rootA] = rootB;
+                // double temp = value[a];
+                // System.out.println("first fucking temp " + temp + " fucking root " + rootA);
+                // value[a] = val;
+                // System.out.println("value[rootA] " + value[rootA] + " val " + val + " temp " + temp);
+                
+                value[rootA] *= val * value[b];
+                
+                //System.out.println("root is " + rootA + " ?????????????? " + value[rootA]);
+                //value[rootA] *= temp / value[a];
+                
+            }
+        }
+    }
+    public double[] calcEquation(String[][] equations, double[] values, String[][] queries) {
+        if (equations == null || values == null){
+            return null;
+        }
+        // String uf index
+        HashMap<String, Integer> stringIndexes = new HashMap<>();
+        int index = 0;
+        for (int i = 0; i < equations.length; i++){
+            if (!stringIndexes.containsKey(equations[i][0])){
+                stringIndexes.put(equations[i][0], index++);
+            }
+            if (!stringIndexes.containsKey(equations[i][1])){
+                stringIndexes.put(equations[i][1], index++);
+            }
+            //uf.union(stringIndexes.get(equations[i][0]), stringIndexes.get(equations[i][1]), values[i]);
+        }
+//         for (Map.Entry<String, Integer> entry : stringIndexes.entrySet()){
+//             System.out.println(entry.getKey() + "_" + entry.getValue());
+//         }
+        
+        
+        UF uf = new UF(index);
+        
+        
+        for (int i = 0; i < equations.length; i++){
+        //     System.out.println("number is " + stringIndexes.get(equations[i][0]) +" ???? "+stringIndexes.get(equations[i][1]));
+        // System.out.println("11111 - " + uf.value[0]);
+        // // System.out.println("11111 - " + uf.value[2]);
+            if (stringIndexes.get(equations[i][0]) < stringIndexes.get(equations[i][1])){
+                uf.union(stringIndexes.get(equations[i][1]), stringIndexes.get(equations[i][0]), 1/ values[i]);
+            } else{
+                uf.union(stringIndexes.get(equations[i][0]), stringIndexes.get(equations[i][1]), values[i]);
+            }
+            
+        //System.out.println("22222 - " + uf.value[0]);
+        // System.out.println("22222 - " + uf.value[2]);
+            
+        }
+       
+        // for (int i = 0; i < uf.father.length; i++){
+        //     uf.find(i);
+        // }
+        // for (int i = 0; i < uf.father.length; i++){
+        //     System.out.println("index " + i);
+        //     System.out.println("father " + uf.father[i]);
+        //     System.out.println("value " + uf.value[i]);
+        // }
+        // for (int i = uf.father.length - 1; i >= 0; i--){
+        //     uf.find(i);
+        // }
+        for (int i = 0; i <= uf.father.length - 1; i++){
+            uf.find(i);
+        }
+        // System.out.println("22222 " + uf.value[0]);
+        // System.out.println("22222 - 2" + uf.value[1]);
+        double[] ans = new double[queries.length];
+        for (int i = 0; i < queries.length; i++){
+            
+            if (!stringIndexes.containsKey(queries[i][0]) 
+                || !stringIndexes.containsKey(queries[i][1])){
+                ans[i] = -1.0;
+                //System.out.println("?");
+                continue;
+            }
+            
+            int a = stringIndexes.get(queries[i][0]);
+            int b = stringIndexes.get(queries[i][1]);
+            
+            if (uf.father[a] == uf.father[b]){            
+                ans[i] = uf.value[a] / uf.value[b];
+            } else {
+                ans[i] = -1.0;
+            }
+                
+        }
+        
+        
+        // for (int i = 0; i < uf.father.length; i++){
+        //     System.out.println("index " + i);
+        //     System.out.println("father " + uf.father[i]);
+        //     System.out.println("value " + uf.value[i]);
+        // }
+        return ans;
+    }
+}
+
