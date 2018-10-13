@@ -1,0 +1,76 @@
+/**
+* 424. Longest Repeating Character Replacement
+* https://leetcode.com/problems/longest-repeating-character-replacement/description/
+* pro: 替换K个数字, 可以形成最长多长的String
+* tag: sliding window, 把j的结束条件和后面的拆分开
+* sol: 枚举起点, 重点是用掉K能走的最远.然后移动起点
+* mis:  
+* fol:
+* oth:
+*/
+class Solution {
+    public int characterReplacement(String s, int k) {
+        if (s == null && s.length() == 0){
+            return 0;
+        }
+        int[] map = new int[26];
+        int max = 0;
+        int len = s.length();
+        //map[s.charAt(0) - 'A']++;
+        int j = 0;
+        for (int i = 0; i < len; i++){
+            // in
+            
+            // 第一次加入的时候, j是0, 也就是里面其实是0个
+            // 条件拆分, 抱着后面可以多加进一个
+            
+            
+            // 因为全部valid的情况, break会在最后多走一个
+            // 但是在部分valid的时候, j可能刚好就没有多走
+            // 所以条件的拆分写, 可以避免两种不同退出, 在同一条件被卡住
+            while (j < len){
+                //j++;
+                char temp = s.charAt(j);
+                map[temp - 'A']++;
+                //char currentChar = '-';
+                //curMax = 0;
+                if (count(map) > k){
+                    map[temp - 'A']--;
+                    break;
+                }
+                j++;
+                // for (int m = 0; m < 26; m++){
+                //     if (curMax < map[m]){
+                //         curMax = map[m];
+                //         curC = (char)(m + 56);
+                //     }
+                //     //curMax = Math.max(curMax, map[m]);
+                // // }
+                // System.out.println("i " + i);
+                // System.out.println("j " + j);
+                // System.out.println(" k + curMax " + (k + curMax));
+                // j++;
+            }
+            // if (j - i == 5){
+            //     System.out.println("i " + i);
+            //     System.out.println("j " + j);
+            // }
+            // if (j == s.length() && s.charAt(j - 1) != curC){
+            //     j--;
+            // }
+            max = Math.max(max, j - i);
+            // out
+            map[s.charAt(i) - 'A']--;
+        }
+        return max;
+    }
+    public int count(int[] ch){
+        int max = 0;
+        int sum = 0;
+        for(int val:ch){
+            sum += val;
+            max = Math.max(max, val);
+        }
+        return sum - max;
+    }
+}
