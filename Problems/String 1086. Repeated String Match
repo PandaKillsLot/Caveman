@@ -1,10 +1,11 @@
-  /**
+public class Solution {
+    /**
     * 1086. Repeated String Match
     * https://www.lintcode.com/problem/repeated-string-match/description
     * pro: A字符创重复多少次可以使得B串成为他的子串
     * tag: String
-    * sol: strstr()
-    * mis:  
+    * sol: strstr() + 循环数组, 如果一个数组是另外一个数组滚动出来的, 最多len * 2 就可以判定了
+    * mis: 
     * fol:
     * oth:
     */
@@ -28,9 +29,7 @@
         int count = 1;
         int position = -1;
         
-        
-        
-        while (m <= 10000) {
+        while (m <= 2 * n || m <= 2 * m) {
             position = search(strB.toString(), B);
         
             if (position == -1) {
@@ -39,7 +38,6 @@
                 count++;
                 
             } else {
-                
                 return count;
                 
             }
