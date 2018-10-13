@@ -1,0 +1,54 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+/**
+* 61. Rotate List
+* https://leetcode.com/problems/rotate-list/description/
+* pro:链表左移动一下
+* tag: ds
+* sol: 12345-> 2 45123 把k取模, 找到5, 链接起来
+* mis:  
+* fol:
+* oth:
+*/
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null){
+            return head;
+        }
+        int size = 0;
+        ListNode pointer = head;
+        while (pointer.next != null){
+            size++;
+            pointer = pointer.next;
+        }
+        size++;
+        //pointer = head;
+        ListNode pointer2 = head;
+
+        k = k % size;
+        if (k == 0){
+            return head;
+        }
+        int step = 0;
+        ListNode tail = null;
+        ListNode head2 = null;
+        while (step < size - k - 1){
+            step++;
+            pointer2 = pointer2.next;
+        }
+        tail = pointer2;
+                System.out.println("tail " + tail.val);
+
+        head2 = pointer2.next;
+        tail.next = null;
+        pointer.next = head;
+        
+        return head2;
+    }
+}
