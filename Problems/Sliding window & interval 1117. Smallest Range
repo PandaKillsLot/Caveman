@@ -1,0 +1,83 @@
+public class Solution {
+    /**
+     * @param nums: k lists of sorted integers
+     * @return: the smallest range that includes at least one number from each of the k lists
+     */
+/**
+* 1117. Smallest Range
+* https://www.lintcode.com/problem/smallest-range/leaderboard
+* pro:给你几个range, 找能够包涵这几个range的最小的数 
+* tag: two p, slinding window
+* sol: 数字排序, 记录所在的数组, 然后找出最小的, 含有三个的数组
+* mis:  注意输出的数字, 不是index
+* fol:
+* oth:
+*/
+    class Pair{
+        int number;
+        int from;
+        
+        public Pair(int number, int from){
+            this.number = number;
+            this.from = from;
+        }
+    }
+    public int[] smallestRange(List<List<Integer>> nums) {
+        // write your code here
+        if(nums == null || nums.size() == 0){
+            return null;
+        }
+        int from = 0;
+        int[] ans = {-1, -1};
+        List<Pair> pairs = new ArrayList<>();
+        for (List<Integer> num : nums){
+            for(Integer number : num){
+                pairs.add(new Pair(number, from));
+            }
+            from++;
+        }
+        Collections.sort(pairs, new Comparator<Pair>(){
+            @Override
+            public int compare (Pair p1, Pair p2){
+                return p1.number - p2.number;
+            }
+        });
+        
+        int min = Integer.MAX_VALUE;
+        int j = 0;
+        int count = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < from; i++){
+            map.put(i, 0);
+        }
+        for (int i = 0; i < pairs.size(); i++){
+            while(j < pairs.size()){
+                if (count < from){
+                    map.put(pairs.get(j).from, map.get(pairs.get(j).from) + 1);
+                    if (map.get(pairs.get(j).from) == 1){
+                        count++;
+                    }
+                    j++;
+                } else {
+                    break;
+                }
+            }
+            // in case of no exsists
+            int len = pairs.get(j - 1).number - pairs.get(i).number;
+            if (count == from && min > len){
+                //System.out.println(len);
+                min = Math.min(min, len);
+                ans[0] = i;
+                ans[1] = j - 1;
+            }
+            // out
+            map.put(pairs.get(i).from, map.get(pairs.get(i).from) - 1);
+            if (map.get(pairs.get(i).from) == 0){
+                count--;
+            }
+        }
+        ans[0] = pairs.get(ans[0]).number;
+        ans[1] = pairs.get(ans[1]).number;
+        return ans;
+    }
+}
