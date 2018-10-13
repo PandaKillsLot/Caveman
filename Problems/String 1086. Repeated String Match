@@ -5,6 +5,7 @@ public class Solution {
     * pro: A字符创重复多少次可以使得B串成为他的子串
     * tag: String
     * sol: strstr() + 循环数组, 如果一个数组是另外一个数组滚动出来的, 最多len * 2 就可以判定了
+    * 如果 A小于B, 那么2 * b的size一定能找到. A大于b, 那么 2 A的size一定能找到
     * mis: 
     * fol:
     * oth:
