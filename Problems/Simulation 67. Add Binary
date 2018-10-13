@@ -1,0 +1,37 @@
+/**
+* 67. Add Binary
+* https://leetcode.com/problems/add-binary/description/
+* pro: 两个string模拟计算
+* tag: simulation
+* sol: carry + 经典双指针merge
+* mis:  
+* fol:
+* oth:
+*/
+
+
+class Solution {
+    public String addBinary(String a, String b) {
+        if (a == null || b == null) {
+            return null;
+        }
+        
+        int i = a.length() - 1;
+        int j = b.length() - 1;
+        String ans = "";
+        int carrier = 0;
+        
+        while(i >= 0 || j >= 0){
+            int val_a = i >= 0 ? Integer.valueOf(a.charAt(i--) - '0') : 0;
+            int val_b = j >= 0 ? Integer.valueOf(b.charAt(j--) - '0') : 0;
+
+            int sum = val_a + val_b + carrier;
+            carrier = sum / 2;
+            ans = String.valueOf(sum % 2) + ans;
+        }
+        if (carrier > 0) {
+            ans = carrier + ans;
+        }
+        return ans;
+    }
+}
