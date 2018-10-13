@@ -1,0 +1,168 @@
+1.0 valid和本体分开, 方向数组, 全回溯, 对于dfs本身的搜索的路径优化, 对于其他的优化
+
+
+class Solution{
+/**
+* 635. Boggle Game
+* https://www.lintcode.com/problem/boggle-game/description
+* pro:给一个字典, 一个board,问怎么在board上放最多的字
+* tag: dfs, tries
+* sol: 1) 两种dfs交替 -> 找有效string, 找到后找下一个
+*      2) 两种dfs都是全方向, 
+*                    全条件可以回溯
+*          所以对于当你搜索到最后的位置了, 前面的全部可能性,一定都被找过了
+*          dic {"aaa", "ca", "aac"} 
+*          bbabb
+*          bbaac
+*          bbacb
+*          比如你搜到aaa作为第一个了, 第一个的entry是[0,2], 那么[0, 2]之间一定没有了
+*          不用继续把指针拿到最前面去
+*     3)   无论什么回溯, 一定要方向都是对的
+* mis:  
+* fol:
+* oth:
+*/
+ 
+    class TrieNode{
+        char c;
+        String str;
+        HashMap<Character, TrieNode> children;
+        
+        public TrieNode(char c, String str) {
+           this.c = c;
+            this.str = str;
+            this.children = new HashMap<>();
+        }
+    }
+    class TrieTree{
+        TrieNode root;
+        
+        public TrieTree () {
+            this.root = new TrieNode('+', null);
+        }
+        
+        public void insert(String word) {
+            TrieNode pointer = this.root;
+            for (int i = 0; i < word.length(); i++) {
+                if (!pointer.children.containsKey(word.charAt(i))) {
+                    pointer.children.put(word.charAt(i), new TrieNode(word.charAt(i), null));
+                }
+                pointer = pointer.children.get(word.charAt(i));
+                // 小心别覆盖了前面的值
+                if (i == word.length() - 1) {
+                    pointer.str = word;
+                }
+            }
+        }
+    }
+    //result
+    int max = 0;
+    
+    public int boggleGame(char[][] board, String[] words) {
+       // corner case
+        if (board == null || board.length == 0) {
+            return 0;
+        }
+        int row = board.length;
+        int col = board[0].length;
+        // initiate trie tree
+        TrieTree tt = new TrieTree();
+        for (int i = 0; i < words.length; i++) {
+            tt.insert(words[i]);
+        }
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                //search(board, new boolean[row][col], i, j, i, j, tt, tt.root, new ArrayList<String>());
+                //                                   pos<-->source
+                search(board, new boolean[row][col], i, j, i, j, tt, tt.root, new ArrayList<String>());
+                System.out.println("??????????????????????????????????????????");
+                // import 搜到一个就可以停了--> 傻吊, 是不对的,第一个, 未必是正确的
+                // ["liiiiit"] {"liiiiit", 'l'}
+                // if (max != 0){
+                //     break;
+                // }
+            }
+        }
+        //search(board, new boolean[row][col], 0, 0, 0, 0, tt, tt.root, new ArrayList<String>());
+        // for (int i = 0; i < row; i++) {
+        //     for (int j = 0; j < col; j++) {
+        //         //search(board, new boolean[row][col], i, j, i, j, tt, tt.root, new ArrayList<String>());
+        //         //                                   pos<-->source
+        //       System.out.println("??????????????????????????????????????????");
+        //         // import 搜到一个就可以停了--> 傻吊, 是不对的,第一个, 未必是正确的
+        //         // ["liiiiit"] {"liiiiit", 'l'}
+        //         // if (max != 0){
+        //         //     break;
+        //         // }
+        //     }
+        // }
+        
+        return max;
+    }
+    // // pass
+    // int[] dx = {0,-1,0,1};
+    // int[] dy = {1,0,-1, 0};
+    
+    // fail
+    int[] dx = {1,0,-1, 0};
+    int[] dy = {0,-1,0,1};
+    
+    
+    public void search(char[][]board, boolean[][] visited, int row, int col, int di,int dj, TrieTree tt,TrieNode root, List<String>ans){
+        // check validation
+        if (!isVaild(board, visited, row, col) 
+            || !root.children.containsKey(board[row][col])) {
+            return;
+        }
+        
+        root = root.children.get(board[row][col]);
+        
+        visited[row][col] = true;
+        
+        // re-iterate through the board if found a word
+        if (root.str != null) {
+            ans.add(root.str);
+            //System.out.println("add " + root.str);
+            max = Math.max(ans.size(), max);
+            
+            /*
+            这里限制的是, 在不能找到一个就break的情况下,
+            XXXXXXX
+            XXXXXXX
+            XXXXXXO
+            不从头再找一遍
+            
+            也就是说, 这个优化, 不是相对于当前路径的优化, 而是其他路径的优化!
+            */
+            for (int i = di; i < board.length; i++) {// sbu
+                //for (int j = dj; j < board[0].length; j++) {
+                for (int j = 0; j < board[0].length; j++) {
+                    if (i == di && j <= dj) {
+                        continue;
+                    }
+                    search(board, visited, i, j, i, j, tt, tt.root, ans);
+                }
+            }
+            // trace back
+            visited[row][col] = false;
+            ans.remove(ans.size() - 1);
+            return;
+        } 
+        
+        for (int i = 0; i < 4; i++) {
+            int x = dx[i] + row;
+            int y = dy[i] + col;
+            search(board, visited, x, y, di, dj, tt, root, ans);
+        }
+        
+        visited[row][col] = false;
+    }
+    
+    public boolean isVaild(char[][]board, boolean[][] visited,int i, int j) {
+        int row = board.length;
+        int col = board[0].length;
+        
+        return i >= 0 && i < row && j >= 0 && j < col && !visited[i][j];
+    }
+}
