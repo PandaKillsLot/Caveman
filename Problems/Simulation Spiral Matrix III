@@ -1,0 +1,92 @@
+/**
+* 885. Spiral Matrix III
+* https://leetcode.com/problems/spiral-matrix-iii/description/
+* pro: 一个矩阵, 给定起始点, 从内往外, 顺时针打印数字
+* tag: simulate
+* sol: cur, 方向, step!
+* mis:  
+* fol:
+* oth:
+*/
+
+class Solution {
+    public int[][] spiralMatrixIII(int R, int C, int r0, int c0) {
+        int limit =R * C;
+        int[][] ans = new int[R * C][2];
+        int count = 0;
+        ans[count][0] = r0;  
+        ans[count][1] = c0;
+        
+        
+        count++;
+        
+        int step = 1;
+        
+        int[] dx = {1, 0, -1, 0};
+        int[] dy = {0, -1, 0, 1};
+        
+        
+        while (count < limit){
+            //int dirc = 3;
+            // left 
+            for (int i = 0; i < step; i++){
+                r0 += dx[3];
+                c0 += dy[3];
+                if (isValid( r0, c0, R, C) && count < limit){
+                    ans[count][0] = r0;  
+                    ans[count][1] = c0;
+                    count++;
+                }
+
+            }
+
+            
+            // down 
+            for (int i = 0; i < step; i++){
+                r0 += dx[0];
+                c0 += dy[0];
+                if (isValid( r0, c0, R, C) && count < limit){
+                    ans[count][0] = r0;  
+                    ans[count][1] = c0;
+                    count++;
+                }
+
+            }
+            step++;
+
+            // dwon 
+            for (int i = 0; i < step; i++){
+                r0 += dx[1];
+                c0 += dy[1];
+                if (isValid( r0, c0, R, C) && count < limit){
+                    ans[count][0] = r0;  
+                    ans[count][1] = c0;
+                    count++;
+                }
+              
+            }
+                   
+            // left 
+            for (int i = 0; i < step; i++){
+                r0 += dx[2];
+                c0 += dy[2];
+                if (isValid( r0, c0, R, C) && count < limit){
+                    ans[count][0] = r0;  
+                    ans[count][1] = c0;
+                    count++;
+                }
+               
+            }
+            step++;
+            
+        }
+        
+        
+        return ans;
+    }
+    private boolean isValid(int x, int y, int r, int c){
+        
+        return x >= 0 && x < r && y >= 0 && y < c;
+        
+    }
+}
