@@ -1,0 +1,110 @@
+public class Solution {
+    /**
+     * @param A: An integer array
+     * @param start: An integer
+     * @param end: An integer
+     * @return: the number of possible answer
+     */
+
+/**
+* Subarray Sum II
+* https://www.lintcode.com/problem/subarray-sum-ii/description
+* pro:数组里找一个window, window里的数加起来的和在[start, end]之间
+* tag: binary search
+* sol: prefix sum array + 二分搜索
+* mis:  
+* fol:
+* oth:
+*/   
+     
+    // 这里可以滑动窗口, O(n)解决
+    // 整个智障数组系列
+    
+    public int subarraySumII(int[] A, int start, int end) {
+        // write your code here
+        if (start == end && start == 0){
+            return 0;
+        }
+        int[] prefix = new int[A.length + 1];
+        prefix[0] = 0;
+        for(int i = 1; i <= A.length; i++){
+            prefix[i] = prefix[i - 1] + A[i - 1];
+        }
+        int count = 0;
+        for (int i = 1; i <= A.length; i++){
+            // 傻比, 不能找等于
+            // System.out.println("================================================= ");
+            // System.out.println("================================================= ");
+            if (prefix[i] < start){
+                continue;
+            }
+            int s = searchFirst(prefix, i, prefix[i] - end);
+            int e = searchLast(prefix, i, prefix[i] - start);
+           
+            // System.out.println("lower " + (prefix[i] - end) + " upper " + (prefix[i] - start));
+            // System.out.println("prefix[i] " + prefix[i] + " i " + i + " s " + s + " e "   + e );
+            // System.out.println("s---- " + prefix[s] + " e---- "   + prefix[e]);
+            // System.out.println("s---- " + prefix[s] + " e---- "   + prefix[e]);
+            if (s == -1|| e == -1 || s > e ){
+                continue;
+            }
+            
+            count += e - s + 1;
+            System.out.println("count " + count);
+        }
+       
+        return count;
+    }
+    // 大于等于1的第一个
+    private int searchFirst(int[] prefix, int pos, int target){
+        if (target < 0){
+            target = 0;
+        }
+        int start = 0;
+        int end = pos;
+        
+        while (start + 1< end){
+            int mid = (start + end) / 2;
+            if (prefix[mid] >= target ){
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }   
+        
+        if (prefix[start] >= target){
+            return start;
+        }
+        if (prefix[end] >= target){
+            return end;
+        }
+        return -1;
+    }
+    // 小于等于3的最后一个  // 小于等于5的第一个
+    private int searchLast(int[] prefix, int pos, int target){
+        if (target < 0){
+            target = 0;
+        }
+        int start = 0;
+        int end = pos;
+        
+        while (start + 1 < end){
+            int mid = (start + end) / 2;
+            if (prefix[mid] <= target){
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        // System.out.println("pos " + pos + " prefix[pos] " + prefix[pos]);
+        // System.out.println("start " + start);
+        // System.out.println("end " + end);
+        if (prefix[end] <= target){
+            return end;
+        }
+         if (prefix[start] <= target){
+            return start;
+        }
+        return -1;
+    }
+}
