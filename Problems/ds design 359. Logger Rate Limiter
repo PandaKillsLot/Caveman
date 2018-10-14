@@ -1,0 +1,86 @@
+class Logger {
+/**
+* 359. Logger Rate Limiter
+* https://leetcode.com/problems/logger-rate-limiter/description/
+* pro:设计一个记录msg的ds, 如果在10分钟这个msg被答应过就别打印了
+* tag: ds design, 带计数器
+* sol: 经典的滚动数组 + 辅助
+
+        1) 初始思路:hashmap记录下 msg, timestamp, 这样不删除的话很太大, 删除又是O(n)
+        2) 进化思路: 滚动数组
+           *) 要记录的,始终只有一定的量, 比如最近的10minutes
+           *) 剩下的信息可以用辅助记录来解决
+           
+           timestamps数组长度为10, 每次挪动? 不, 取模后和自己原来的地方比较, 是不是比原来的大. 
+           也就是说, 滚动数组并不是绝对的删除范围外的数字, 而是把重复的stamp控制在了10.
+           [10, 91,92,93,94,95,96,97,98,99]也是有可能的.这个是保存了当前stamp的10范围前可能的祖先
+           
+           剩下的就是, 看下对应的stamp里的, 这个msg是不是打印过了
+           
+           每次进新的msg, 先确认是不是在有记录的每家里, 打印过了,, 遍历一下.比如 95minutes打印过了, 97来check
+           然后update对应的set,把 msg加进去
+           
+           
+* mis:  
+* fol:
+* oth:
+*/
+
+    Set<String>[] record;
+    int[] times;
+    public Logger() {
+        record = new HashSet[10];
+        for(int i = 0; i < record.length; i++) record[i] = new HashSet();
+        times = new int[10];
+        Arrays.fill(times, -10);
+    }
+    
+    /** Returns true if the message should be printed in the given timestamp, otherwise returns false.
+        If this method returns false, the message will not be printed.
+        The timestamp is in seconds granularity. */
+    public boolean shouldPrintMessage(int timestamp, String message) {
+        for(int i = 0; i < times.length; i++) {
+            if(timestamp - times[i] < 10 && record[i].contains(message)) {
+                return false;
+            }
+        }
+        int index = timestamp % 10;
+        if(timestamp - times[index] >= 10) {
+            // rotate
+            times[index] = timestamp;
+            record[index] = new HashSet();
+        }
+        record[index].add(message);
+        return true;
+    }
+    
+//     /** Initialize your data structure here. */
+//     HashMap<String, Integer> map;
+//     public Logger() {
+//         map = new HashMap<>();
+//     }
+    
+//     /** Returns true if the message should be printed in the given timestamp, otherwise returns false.
+//         If this method returns false, the message will not be printed.
+//         The timestamp is in seconds granularity. */
+//     public boolean shouldPrintMessage(int timestamp, String message) {
+//         if (!map.containsKey(message)){
+//             map.put(message, timestamp);
+//             return true;
+//         } else {
+//             if (timestamp - map.get(message) >= 10){
+//                 map.put(message, timestamp);
+//                 return true;
+//             } else {
+//                 //map.put(message, timestamp);
+//                 return false;
+//             }
+//         }
+//     }
+}
+
+/**
+ * Your Logger object will be instantiated and called as such:
+ * Logger obj = new Logger();
+ * boolean param_1 = obj.shouldPrintMessage(timestamp,message);
+ */
