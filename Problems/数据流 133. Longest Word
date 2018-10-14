@@ -1,0 +1,34 @@
+public class Solution {
+    /*
+     * @param dictionary: an array of strings
+     * @return: an arraylist of strings
+     */
+    
+/**
+* 133. Longest Word
+* https://www.lintcode.com/problem/longest-word/description
+* pro: 求一个字典里面最长的单词
+* tag: hashmap, 海量数据处理
+* sol: 过一遍, 维持一个max, 然后每次记录和比较. 超过了max,就把原来的全部删掉
+* mis:  
+* fol:
+* oth:
+*/
+    public List<String> longestWords(String[] dictionary) {
+        // write your code here
+        
+        int max = 0;
+        List<String> ans = new ArrayList<>();
+        for (String str : dictionary){
+            if (str.length() > max){
+                max = str.length();
+                ans.clear();
+                ans.add(str);
+            } else if (str.length() == max){
+                ans.add(str);
+            }
+        }
+        return ans;
+
+    }
+}
