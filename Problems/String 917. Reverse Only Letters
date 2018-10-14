@@ -1,0 +1,40 @@
+/**
+* 917. Reverse Only Letters
+* https://leetcode.com/problems/reverse-only-letters/description/
+* pro: 一个字符串, 只翻转
+* tag: String
+* sol: Character.isLetter(str[right])
+* mis:  每次a走, b走, ab校验,总是忘了挪动ab
+* fol:
+* oth:
+*/
+class Solution {
+    public String reverseOnlyLetters(String S) {
+        if (S == null || S.length() == 0){
+            return S;
+        }
+        char[] str = S.toCharArray();
+        int left = 0;
+        int right = str.length - 1;
+        while (left < right){
+            while (left < right && !Character.isLetter(str[left])){
+                left++;
+            }
+            while (left < right && !Character.isLetter(str[right])){
+                right--;
+            }
+            if (left < right && Character.isLetter(str[left]) && Character.isLetter(str[right])){
+                swap(left, right, str);
+                // 老是错
+                left++;
+                right--;
+            }
+        }
+        return new String(str);
+    }
+    private void swap(int left, int right, char[] str){
+        char temp = str[left];
+        str[left] = str[right];
+        str[right] = temp;
+    }
+}
