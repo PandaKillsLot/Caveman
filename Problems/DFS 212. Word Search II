@@ -1,0 +1,118 @@
+/**
+* 212. Word Search II
+* https://leetcode.com/problems/word-search-ii/description/
+* pro: 在board里找全部board上的数
+* tag: dfs, string, trie tree
+* sol: 写个trie tree, 这样不用遍历check. 可以一个字典一起check
+* mis:  
+* fol:
+* oth:
+*/
+
+public class Solution {
+        // 建立trie树
+        // 递归搜索前后上下
+    class Node {
+        // 证明搜到一个完整的string
+        boolean isString;
+        HashMap<Character, Node> subtree;
+        // 最后要存
+        String word;
+        // 因为char和node的关系已经在map里存了，所有就没有必要另外存了
+        public Node() {
+            this.isString = false;
+            this.subtree = new HashMap<Character, Node>();
+            // 赋值成null和不赋值的区别
+            this.word = "";
+        }
+    }
+    private class TrieTree {
+        // 树的结构：节点 + 表
+        //       O
+        //      /
+        //     ------
+        //     |a|c|d|
+        //     /  \ \
+        //    O   O O
+        // 
+        Node root;
+        public TrieTree(){
+            this.root = new Node();
+        }
+        public void insert_string(String s) {
+            Node now = this.root;
+            for (int i = 0; i < s.length(); i++) {
+                // add new node
+                if (!now.subtree.containsKey(s.charAt(i))) {
+                    // 如果有，继续往下；如果没有，新建一个
+                    Node node = new Node();
+                    now.subtree.put(s.charAt(i), node);
+                }
+                // put the signal and val on the very last one
+                if (i == s.length() -1) {
+                    now.subtree.get(s.charAt(i)).word = s;
+                    now.subtree.get(s.charAt(i)).isString = true;
+                }
+                // 一直往下走
+                now = now.subtree.get(s.charAt(i));
+            }
+        }
+    }   
+    // 九宫的走法之： 上下左右    
+    private int[] dx = {1, 0, -1, 0};
+    private int[] dy = {0, 1, 0, -1};
+        
+        
+    private void search(char[][] board, TrieTree t_tree, Node node, int x, int y, List<String> result) {
+        // 1.end case
+        //  1.1 get a certain word
+        if (node.isString) {
+            if (!result.contains(node.word)) {
+                result.add(node.word);
+                // 并不是找到了就返回
+                //return;
+            }
+        }
+        //  1.2 out of boudary; trace back to former char;
+        // ? 为什么不是n - 1
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length || board[x][y] == '0') {
+            return;
+        }
+        for (int i = 0; i < 4; i++) {
+            if (node.subtree.containsKey(board[x][y])) {
+                char temp = board[x][y];
+                // 先清空避免回溯
+                board[x][y] = '0';
+                search(board, t_tree, node.subtree.get(temp), x + dx[i], y + dy[i], result);
+                // 再加回来
+                board[x][y] = temp;
+            }
+        }
+    }
+        
+    
+    public List<String> findWords(char[][] board, String[] words) {
+        // results storation
+        List<String> result = new ArrayList<String>();
+        // corn case 
+        if (board == null || board.length == 0|| board[0] == null || board[0].length == 0) {
+            return result;
+        }
+        if (words == null || words.length == 0) {
+            return result;
+        }
+        // initiate trie tree
+        TrieTree t_tree = new TrieTree();
+        for (String s : words) {
+            t_tree.insert_string(s);
+        }
+        // search 
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                search(board, t_tree, t_tree.root,i, j, result);
+            }
+        }
+        return result;
+    }
+    
+}
