@@ -1,0 +1,75 @@
+/**
+*   u u u
+*   l u r
+*   d d r
+*
+*/
+
+/**
+* Spiral Matrix II
+* https://leetcode.com/problems/spiral-matrix-ii/description/
+* pro: 把一格矩阵顺时针从内到外打印出来
+* tag: simulate 模拟操作
+* sol: 其实是模拟的指针走路方式
+       主要构成有:
+       1) cur 指针
+       2) direction
+       3) 边界/ 步数
+       
+       这道题原来的解法比较神奇, 其实省略了cur指针.
+       使用了上下左右四个指针来像车床一样打印步数, 其实是比较取巧的方式
+       
+       新的解法重用了 cur, direc, 步数, 三个基本要素. 边界标0
+       并且在方向用了优化, 节省了代码.
+       
+       
+       
+* mis: 没有及时在倒车位置倒车, 会导致元素是0的时候加不上去
+* fol:Spiral Matrix II
+* oth:
+*/
+
+
+
+
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        
+        int up = 0;
+        int down = n - 1;
+        int left = 0;
+        int right = n - 1;
+        
+        int number = 1;
+        while (up <= down && left <= right){
+            // up
+            for (int i = left; i <= right; i++){
+                matrix[up][i] = number++;
+            }
+            up++;
+            // right
+            for (int i = up; i <= down; i++){
+                matrix[i][right] = number++;
+            }
+            right--;
+            // down
+            if (up <= down){
+                for (int i = right; i >= left; i--){
+                    matrix[down][i] = number++;
+                }
+                down--;                
+            }
+            // left
+             if (left <= right){
+                for (int i = down; i >= up; i--){
+                    matrix[i][left] = number++;
+                }
+                left++;                
+            }
+        }
+        
+        
+        return matrix;
+    }
+}
