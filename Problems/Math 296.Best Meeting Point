@@ -1,0 +1,45 @@
+class Solution {
+    
+/**
+* 296.Best Meeting Point
+* https://leetcode.com/problems/best-meeting-point/description/
+* pro:给一个图, 一堆人 ,问到哪里聚会最近
+* tag: Math
+* sol: 1个数字, 自己最近. 2个数字, 之间都是最近. 3个数字, 重点的最近. 所以n 个数字, 就是到中位数最近
+* mis:  
+* fol:
+* oth:
+*/
+    public int minTotalDistance(int[][] grid) {
+        if (grid == null){
+            return 0;
+        }
+        int m = grid.length;
+        int n = grid[0].length;
+        
+        List<Integer> xs = new ArrayList<>();
+        List<Integer> ys = new ArrayList<>();
+        
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                if (grid[i][j] == 1){
+                    xs.add(i);
+                    ys.add(j);
+                }
+            }
+        }
+        Collections.sort(xs);
+        Collections.sort(ys);
+        int centerX = xs.get(xs.size() / 2);
+        int centerY = ys.get(ys.size() / 2);
+        int sum = 0;
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                if (grid[i][j] == 1){
+                    sum += Math.abs(i - centerX) + Math.abs(j - centerY);
+                }
+            }
+        }
+        return sum;
+    }
+}
