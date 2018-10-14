@@ -1,0 +1,81 @@
+class Solution {
+    
+/**
+*   u u u
+*   l u r
+*   d d r
+*
+*/
+
+/**
+* Spiral Matrix I
+* https://leetcode.com/problems/spiral-matrix/description/
+* pro: 把一格矩阵顺时针从内到外打印出来
+* tag: simulate 模拟操作
+* sol: 其实是模拟的指针走路方式
+       主要构成有:
+       1) cur 指针
+       2) direction
+       3) 边界/ 步数
+       
+       这道题原来的解法比较神奇, 其实省略了cur指针.
+       使用了上下左右四个指针来像车床一样打印步数, 其实是比较取巧的方式
+       
+       新的解法重用了 cur, direc, 步数, 三个基本要素. 边界标0
+       并且在方向用了优化, 节省了代码.
+       
+       
+       
+* mis: 没有及时在倒车位置倒车, 会导致元素是0的时候加不上去
+* fol:Spiral Matrix II
+* oth:
+*/
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<Integer>();
+        
+        if (matrix == null || matrix.length == 0){
+            return res;
+        }
+        
+        int m = matrix.length;
+        int n = matrix[0].length;
+        
+        int up = 0;
+        int down = m - 1;
+        int left = 0;
+        int right = n - 1;
+        
+        while (up <= down && left <= right){
+            // print up
+            for (int i = left; i <= right; i++){
+                res.add(matrix[up][i]);
+            }
+            up++;
+            // print right
+            for (int i = up; i <= down; i++){
+                res.add(matrix[i][right]);
+            }
+            right--;
+            // print down
+            if (up <= down ){
+                for (int i = right; i >= left; i--){
+                    res.add(matrix[down][i]);
+                }
+                down--;
+            }
+            
+            // print left
+            //System.out.println("?");
+            //System.out.println(matrix[left][down]);
+            if (left <= right){
+            for (int i = down; i >= up; i--){
+                    res.add(matrix[i][left]);
+                }
+                left++;                
+            }
+
+             
+        }
+        return res;
+    }
+}
