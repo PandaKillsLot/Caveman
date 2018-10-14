@@ -1,0 +1,82 @@
+/**
+* 362. Design Hit Counter
+* https://leetcode.com/problems/design-hit-counter/description/
+* pro: 设计一个ds,记录过去每一秒的hit
+* tag: ds, 带timestamp
+* sol: 
+* mis:  
+* fol:
+* oth:
+*/
+class HitCounter {
+    int[] stamps;
+    int[] hits;
+    int sum;
+    /** Initialize your data structure here. */
+    public HitCounter() {
+        stamps = new int[300];
+        hits = new int[300];
+        sum = 0;
+    }
+    
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public void hit(int timestamp) {
+        // 傻比, 你这样是用两个bucket记下了全部的stamp, 不是你妈的pop了
+        int index = timestamp % 300;
+        int prev = hits[index];
+        if (timestamp == stamps[index]){
+            hits[index]++;
+        } else {
+            stamps[index] = timestamp; 
+            hits[index] = 1;
+        }
+        
+        //sum += hits[index] - prev;
+    }
+    public int getHits(int timestamp) {
+        //hit(timestamp);
+        int sum = 0;
+        for (int i = 0; i < 300; i++){
+            if (timestamp - stamps[i] < 300){
+                sum += hits[i];
+            }
+        }
+        return sum;
+    }
+}
+    
+//     /** Return the number of hits in the past 5 minutes.
+//         @param timestamp - The current timestamp (in seconds granularity). */
+
+
+//     // public HitCounterII() {
+//     //     queue = new LinkedList<>();
+//     // }
+    
+//     /** Record a hit.
+//         @param timestamp - The current timestamp (in seconds granularity). */
+//     public void hitII(int timestamp) {
+//         while (!queue.isEmpty() && timestamp - queue.peek() >= 300){
+//             queue.poll();
+//         }
+//         queue.offer(timestamp);
+//     }
+    
+//     /** Return the number of hits in the past 5 minutes.
+//         @param timestamp - The current timestamp (in seconds granularity). */
+//     public int getHitsII(int timestamp) {
+//         //hit(timestamp);
+//         while (!queue.isEmpty() && timestamp - queue.peek() >= 300){
+//             queue.poll();
+//         }
+//         return queue.size();
+//     }
+//}
+
+/**
+ * Your HitCounter object will be instantiated and called as such:
+ * HitCounter obj = new HitCounter();
+ * obj.hit(timestamp);
+ * int param_2 = obj.getHits(timestamp);
+ */
