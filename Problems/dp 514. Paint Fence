@@ -1,0 +1,49 @@
+public class Solution {
+    /**
+     * @param n: non-negative integer, n posts
+     * @param k: non-negative integer, k colors
+     * @return: an integer, the total number of ways
+     */
+/**
+* 514. Paint Fence
+* https://www.lintcode.com/problem/paint-fence/description
+* pro: n个栅栏k种颜色, 不能连续两个一样,求可以有几种涂法
+* tag: dp 坐标
+* sol: 
+*      ① dp[i] =  几次
+*      ② dp[i] = (k - 1) * 和前面的完全不同dp[i - 1] + 和前面的一样但是和再前面的不一样 dp[i - 2] 
+*      ③ 初始化: 1 和 2
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int numWays(int n, int k) {
+        if (n <= 0){
+            return 0;
+        } else if (n == 1){
+            return k;
+        } else if (n == 2) {
+            return k * k;
+        }
+        
+        int first = k;
+        int second = k * k;
+        int last = 0;
+        n -= 2;
+        while (n > 0){
+            // 要么和前面的不一样, 要么和再前面的不一样
+            last = (k - 1) * (first + second);
+            first = second;
+            second = last;
+            
+            n--;
+        }
+        return last;
+    }
+    
+}
