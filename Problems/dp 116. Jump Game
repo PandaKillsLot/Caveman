@@ -1,0 +1,52 @@
+public class Solution {
+    /**
+     * @param A: A list of integers
+     * @return: The boolean answer
+     */
+/**
+* 116. Jump Game
+* https://www.lintcode.com/problem/jump-game/description
+* pro: 
+* tag: dp 
+* sol: 需要开个数组额外记录能不能走到
+*      ① dp[i] = 能不能走到
+*      ② dp[i] = 所有小于i 的区域是不是能覆盖, 这里有点像最值, 要保证此刻总是max,每个点当前的max未必是max
+*      ③ 初始化: 0
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+   
+    public boolean canJump(int[] A) {
+        // wirte your code here
+        if (A == null || A.length == 0) {
+            return false;
+        }
+        boolean[] couldReach = new boolean[A.length];
+        int[] maxReach = new int[A.length];
+        
+        couldReach[0] = true;
+        maxReach[0] = A[0];
+        // 看下i点之前的点是不是true，然后这个true的点的点数够不够
+        for (int i = 1; i < A.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (!couldReach[j]){
+                    continue;
+                } else {
+                    int dis = maxReach[j] - (i - j);
+                    if (dis >= 0) {
+                        couldReach[i] = true;
+                        maxReach[i] = Math.max(A[i], maxReach[j] - (i - j));
+                    }
+                }
+            }
+        }
+        
+        return couldReach[A.length - 1];
+    }
+}
