@@ -1,0 +1,47 @@
+public class Solution {
+    /**
+     * @param m: positive integer (1 <= m <= 100)
+     * @param n: positive integer (1 <= n <= 100)
+     * @return: An integer
+     */
+/**
+* 114. Unique Paths
+* https://www.lintcode.com/problem/unique-paths/description
+* pro: 从上走到下有几种走法
+* tag: dp 
+* sol: 
+*      ① dp[i][j] = 走到这个坐标有几种走法
+*      ② dp[i][j] = 上面过来的过着下面过来的
+*      ③ 初始化: 0
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int uniquePaths(int m, int n) {
+        
+        int[][] ans = new int[m][n];
+        
+        
+        ans[0][0] = 1;
+        for(int i = 1; i < n; i++) {
+            ans[0][i] = 1;
+        }
+        
+        for(int i = 1; i < m; i++) {
+            ans[i][0] = 1;
+        }
+        
+        for(int i = 1; i < m; i++) {
+             for(int j = 1;j < n; j++) {
+                ans[i][j] = ans[i - 1][j] + ans[i][j - 1];         
+             }
+        }
+        
+        return ans[m - 1][n - 1];
+    }
+}
