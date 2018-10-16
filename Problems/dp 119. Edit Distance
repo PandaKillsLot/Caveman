@@ -1,0 +1,67 @@
+public class Solution {
+    // 不考虑顺序的话, 直接统计每个字符串出现了多少次就好
+    // 改变一定是带顺序的, 不然一边左边一边右边会重复
+    //
+    
+    
+    // 杀猪杀屁眼,基本双序列动规全部都从后面做
+    // 最后单词的一定是一样的
+    // 要么是加一变过来的(建议)
+    // 要么是变一个过来的
+    // 要么变一个过来的
+/**
+* 119. Edit Distance
+* https://www.lintcode.com/problem/edit-distance/description
+* pro:问由A变到B, 最少需要编辑几次
+* tag: dp 双序列
+* sol: 二维数组双序列
+*      ① dp[i][j] = a的前i个字符需要变几步能变成b
+*      ② dp[i][j] = Maxdp[i][j] = dp[i-1][j-1] -- > word1.charAt(i-1) == word2.charAt(j-1)
+*                   {Max{1 + Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1]));}}
+*      ③ 初始化: 空串等于暴力加
+*      ④ 计算顺序:
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    
+    public int minDistance(String word1, String word2) {
+        int n = word1.length();
+        int m = word2.length();
+        
+        int[][] dp = new int[n+1][m+1];
+        for(int i=0; i< m+1; i++){
+            dp[0][i] = i; 
+        }
+        for(int i=0; i<n+1; i++){
+            dp[i][0] = i;
+        }
+        // 动A动B一回事, 动A等于动B
+        // dp[i][j] word 的前i个最少几步变成 target j 的前几步
+        // 记录的不是客观的到底怎么变, 只是计算了这两个相等要做几步
+        // dp[i][j] = min{dp[i][j - 1] + 1, dp[i - 1][j - 1] + 1, dp[i - 1][j] + 1, dp[i - 1][j - 1] && A[i - 1] == B[j - 1] }
+        //                A在后面插入B      A的最后一个替换成B    A删掉最后一个     // 最后的是一样的不用变
+        for(int i = 1; i<n+1; i++){
+            for(int j=1; j<m+1; j++){
+                if(word1.charAt(i-1) == word2.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1];
+                }else{
+                    //                      字符替/删除    
+                    dp[i][j] = 1 + Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1]));
+                }
+            }
+        }
+        for(int i = 0; i< n + 1; i++){
+            for(int j = 0; j< m + 1; j++){
+                System.out.print(" " + dp[i][j]);
+            }
+            System.out.println(" ");
+
+        }
+        return dp[n][m];
+    }
+}
