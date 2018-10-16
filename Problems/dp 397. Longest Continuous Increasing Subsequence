@@ -1,0 +1,45 @@
+public class Solution {
+    /**
+     * @param A: An array of Integer
+     * @return: an integer
+     */
+/**
+* 397. Longest Continuous Increasing Subsequence
+* https://www.lintcode.com/problem/longest-continuous-increasing-subsequence/description
+* pro: 
+* tag: dp 
+* sol: 要记得正反各走一遍
+*      ① dp[i] = 以i为结尾的最长
+*      ② dp[i] = A[i - 1] > A[i] ? memo[i - 1] + 1 : 1;
+*      ③ 初始化: 
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int longestIncreasingContinuousSubsequence(int[] A) {
+        // write your code here
+        if (A.length == 0) {
+            return 0;
+        }
+        
+        int longest = 1;
+        int[] memo = new int[A.length];
+        memo[0] = 1;
+        
+        for (int i = 1; i < A.length; i++) {
+            memo[i] = A[i - 1] > A[i] ? memo[i - 1] + 1 : 1;
+            longest = Math.max(longest, memo[i]);
+        }
+        
+        for (int i = 1; i < A.length; i++) {
+            memo[i] = A[i - 1] < A[i] ? memo[i - 1] + 1 : 1;
+            longest = Math.max(longest, memo[i]);
+        }
+        return longest;
+    }
+}
