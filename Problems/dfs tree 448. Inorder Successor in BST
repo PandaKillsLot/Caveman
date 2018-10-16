@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+/**
+* 448. Inorder Successor in BST
+* https://www.lintcode.com/problem/inorder-successor-in-bst/description
+* pro:求bst后继节点
+* tag: dfs tree bfs 
+* sol: 查找遍历 + 备胎 => 遇到第一个大的存一下, 然后往后看 (看下这个行不行,行我先存下, 然后看看有没有更好的)
+*      
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    // version 1 直接二分做，但是要额外记下可能的root和inorder要一直走到最近的地方
+        // 充分利用BST本身的性质
+        // 找 & 判断节点
+    /*    TreeNode temp = null;
+        while (root != null && root.val != p.val) {
+            if (root.val < p.val) {
+                root = root.right;
+                
+            } else {
+                temp = root;
+                root = root.left;
+            }
+        }
+        if (root == null) {
+            return null;
+        } else if (root.right == null) {
+            return temp;
+        } else {
+            // 关键！！！inorder是紧贴着的那个！
+            root = root.right;
+            while (root.left != null) {
+                root = root.left;
+            }
+            return root;
+        }
+    */
+    // version 2 递归遍历
+        if (root == null || p == null) {
+            return null;
+        }
+        if (root.val <= p.val){
+            return inorderSuccessor(root.right, p);
+        } else {
+            // 只要有一个数比P小那就一定有后继
+            TreeNode left = inorderSuccessor(root.left, p);
+            return (left == null) ? root : left;
+        }
+    }
+}
