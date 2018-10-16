@@ -1,0 +1,40 @@
+public class Solution {
+    /**
+     * @param A: An array of non-negative integers.
+     * return: The maximum amount of money you can rob tonight
+     */
+    //---方法一--- 非滚动数组，为了防止越界开个大数组比较easy
+/**
+* 392. House Robber
+* https://www.lintcode.com/problem/house-robber/description
+* pro: 不能偷连着的两个, 求最大值
+* tag: dp 
+* sol: 
+*      ① dp[i] = 当前偷的最多
+*      ② dp[i] = 自己加前一个,  res[i] = Math.max(res[i-1], res[i-2] + A[i-1]);
+*      ③ 初始化: 
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public long houseRobber(int[] A) {
+        // write your code here
+        int n = A.length;
+        if(n == 0)
+            return 0;
+        long []res = new long[n+1];
+        
+        
+        res[0] = 0;
+        res[1] = A[0];
+        for(int i = 2; i <= n; i++) {
+            res[i] = Math.max(res[i-1], res[i-2] + A[i-1]);
+        }
+        return res[n];
+    }
+}
