@@ -1,0 +1,90 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ * Example of iterate a tree:
+ * BSTIterator iterator = new BSTIterator(root);
+ * while (iterator.hasNext()) {
+ *    TreeNode node = iterator.next();
+ *    do something for node
+ * } 
+ * 
+ */
+/**
+* 86. Binary Search Tree Iterator
+* https://www.lintcode.com/problem/binary-search-tree-iterator/description?_from=ladder&&fromId=1
+* pro: 实现BST遍历器
+* tag: dfs tree bfs 
+* sol: 骨干节点stack, 然后从左边的最小值开始遍历. 找到一个节点后, 先看自己的右边有没有, 然后才是回溯到根节点
+* mis:  
+* fol:
+* oth:
+*/
+
+/*
+ *中序遍历，左根右。左节点遍历之后需要回溯到左节点的根节点，右节点遍历完需要回
+ *到右节点根节点的根节点
+ * －－－刚好可以用stack来存，这样的额外空间是O（height）。别的都是O（n）
+ */
+
+public class BSTIterator {
+    Stack<TreeNode> stack;
+    /*
+    * @param root: The root of binary tree.
+    */public BSTIterator(TreeNode root) {
+        // do intialization if necessary
+        stack = new Stack<TreeNode>();
+        TreeNode pointer = root;
+        while (pointer != null) {
+            stack.push(pointer);
+            //System.out.println("pointer " + pointer.val);
+            pointer = pointer.left;
+        }
+    }
+
+    /*
+     * @return: True if there has next node, or false
+     */
+    public boolean hasNext() {
+        // write your code here
+        return !stack.isEmpty();
+    }
+
+    /*
+     * @return: return next node
+     */
+    public TreeNode next() {
+        // write your code here
+        TreeNode current = this.stack.pop();
+        //System.out.println(current.val);
+        TreeNode pointer = current;
+        
+        // already over, trace back
+        if (current.right == null) {
+            /*\  The reason tom use while
+             * \
+             *  \
+             */
+             // 当前是在一颗子树右节点的最右边
+            // while (!stack.isEmpty() && stack.peek().right == pointer) {
+            //     pointer = this.stack.pop();
+            // }
+        } else {
+            //this.stack.push(pointer);
+            // !!! missing this one!
+            // 先压原来的根节点回去，然后往右走一步
+            pointer = pointer.right;
+            while (pointer != null) {
+                stack.push(pointer);
+                pointer = pointer.left;
+            }
+        }
+        return current;
+    }
+}
