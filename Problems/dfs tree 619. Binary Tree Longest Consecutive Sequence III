@@ -1,0 +1,64 @@
+/**
+ * Definition for a multi tree node.
+ * public class MultiTreeNode {
+ *     int val;
+ *     List<MultiTreeNode> children;
+ *     MultiTreeNode(int x) { val = x; }
+ * }
+ */
+
+/**
+* 619. Binary Tree Longest Consecutive Sequence III
+* https://www.lintcode.com/problem/binary-tree-longest-consecutive-sequence-iii/description
+* pro: 连续, 最长路径, leaf to leaf, 但是是k - tree了
+* tag: dfs tree
+* sol: 不单单算 左右, 用个loop全部算一遍. 核心还是分治查户口
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root the root of k-ary tree
+     * @return the length of the longest consecutive sequence path
+     */
+    class ResultType{
+        int up;
+        int down;
+        int max;
+        public ResultType(int up, int down, int max){
+            this.up = up;
+            this.down = down;
+            this.max = max;
+        }
+    }
+    
+    public int longestConsecutive3(MultiTreeNode root) {
+        // Write your code here
+        return helper(root).max;
+    }
+
+    private ResultType helper(MultiTreeNode root){
+        if (root == null){
+            return new ResultType(0, 0, 0);
+        }
+        // 包涵当前root的path长度
+        int up = 1;
+        int down = 1;
+        int max = 1;
+        for (MultiTreeNode child : root.children){
+            ResultType rs = helper(child);
+            if (rs.max != 0){
+                if (child.val == root.val - 1){
+                    up = Math.max(rs.up + 1, up);
+                }  else if (child.val == root.val + 1){
+                    down = Math.max(rs.down + 1, down);
+                }
+                // important
+                max = Math.max(rs.max, max);    
+            }
+        }
+        max = Math.max(max, up + down - 1);
+        return new ResultType(up, down, max);
+    }
+}
