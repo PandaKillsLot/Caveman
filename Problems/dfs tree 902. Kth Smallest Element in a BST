@@ -1,0 +1,42 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 902. Kth Smallest Element in a BST
+* https://www.lintcode.com/problem/kth-smallest-element-in-a-bst/description?_from=ladder&&fromId=1
+* pro:在BST里求第K大
+* tag: dfs tree bfs 
+* sol: 1) inorder遍历 2) 如果多次操作, 把节点的个数统计下, 重新当bst做(基于节点做)
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: the given BST
+     * @param k: the given k
+     * @return: the kth smallest element in BST
+     */
+    ArrayList<Integer> ans = new ArrayList<Integer>();
+    public int kthSmallest(TreeNode root, int k) {
+        // write your code here
+        iterate(root);
+        return ans.get(k - 1);
+    }
+    public void iterate(TreeNode root){
+        if (root == null) {
+            return;
+        }
+        iterate(root.left);
+        ans.add(root.val);
+        iterate(root.right);
+    }
+}
