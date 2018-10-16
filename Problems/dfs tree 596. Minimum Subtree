@@ -1,0 +1,78 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 596. Minimum Subtree
+* https://www.lintcode.com/problem/minimum-subtree/description?_from=ladder&&fromId=1
+* pro:求和最小的子树
+* tag: dfs tree
+* sol: 分治 + 查户口, 记录当前node, 当前值,当前最小node和当前最小node
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: the root of binary tree
+     * @return: the root of the minimum subtree
+     */
+    class ResultType{
+        int cur_sum;
+        TreeNode cur_node;
+        int min_sum;
+        TreeNode min_node;
+        public ResultType(int cur_sum, TreeNode cur_node, int min_sum, TreeNode min_node) {
+            this.cur_sum = cur_sum;
+            this.cur_node = cur_node;
+            this.min_sum = min_sum;
+            this.min_node = min_node;
+        }
+    }
+   
+    public TreeNode findSubtree(TreeNode root) {
+        // write your code here
+        return helper(root).min_node;
+    }
+    private ResultType helper(TreeNode root) {
+        // write your code here
+        if (root == null){
+            return new ResultType(0, null, 0, null);
+        }
+        ResultType rt_left = helper(root.left);
+        ResultType rt_right = helper(root.right);
+        
+        int cur_sum = rt_left.cur_sum + rt_right.cur_sum + root.val;
+        if (rt_left.cur_node == null){
+            rt_left.min_sum = Integer.MAX_VALUE;
+        }
+        if (rt_right.cur_node == null){
+            rt_right.min_sum = Integer.MAX_VALUE;
+        }
+        System.out.println("root " + root.val);
+        System.out.println("cur " + cur_sum);
+        System.out.println("left " + rt_left.min_sum);
+        System.out.println("right " + rt_right.min_sum);
+        int min_sum = Math.min(cur_sum, Math.min(rt_left.min_sum, rt_right.min_sum));
+        System.out.println("min-sum is " + min_sum);
+        if (rt_left.cur_node != null && min_sum == rt_left.min_sum) {
+            return new ResultType(cur_sum, root, min_sum, rt_left.min_node);
+        } else if (rt_right.cur_node != null && min_sum == rt_right.min_sum) {
+            return new ResultType(cur_sum, root, min_sum, rt_right.min_node);
+        } else {
+            return new ResultType(cur_sum, root, min_sum, root);
+        }
+    }
+    
+    
+    
+    
+    
+}
