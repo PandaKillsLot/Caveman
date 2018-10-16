@@ -1,0 +1,71 @@
+public class Solution {
+    /**
+     * @param s: A string
+     * @return: An integer
+     */
+     
+    // 一个palindrome的最小切割数等于前面一个pali + 1
+    // 用数组记忆优化了palin的位置, 不用每次的都找一遍
+/** 108. Palindrome Partitioning II
+* https://www.lintcode.com/problem/palindrome-partitioning-ii/description
+* pro: 最少几刀切成回文串
+* tag: dp 划分
+* sol: 用矩阵先dp算出全部回文串的位置
+*      ① dp[i][j] =  s(i到j)是不是
+*      ② dp[i] = dp[i][j -len]
+*      ③ 初始化: 需要额外初始化一个矩阵
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int minCut(String s) {
+        // corner case
+        if (s == null || s.length() == 0){
+            return 0;
+        }
+        boolean[][] isPalin = new boolean[s.length()][s.length()];
+        check(s, isPalin);
+        int[]dp = new int[s.length() + 1];
+        dp[0] = 0;
+        // dp[i] = min(dp[j] + 1)
+        for (int i = 1; i <= s.length(); i++){
+            dp[i] = Integer.MAX_VALUE;
+            for (int j = i; j >= 1; j--){
+                if (dp[j - 1] != Integer.MAX_VALUE && isPalin[j - 1][i - 1]){
+                    dp[i] = Math.min(dp[i], dp[j - 1] + 1); 
+                }
+            }
+        }
+        // mistake
+        return dp[s.length()] - 1;
+    }
+    private void check(String s, boolean[][] isPalin){
+        // odd
+        for (int i = 0; i < s.length(); i++){
+            int left = i;
+            int right = i;
+            while (left >= 0 && right < s.length() 
+                && s.charAt(left) == s.charAt(right)){
+                isPalin[left][right] = true;
+                left--;
+                right++;
+            }
+        }
+        // even
+        for (int i = 1; i < s.length(); i++){
+            int left = i - 1;
+            int right = i;
+            while (left >= 0 && right < s.length() 
+                && s.charAt(left) == s.charAt(right)){
+                isPalin[left][right] = true;
+                left--;
+                right++;
+            }
+        }
+    }
+}
