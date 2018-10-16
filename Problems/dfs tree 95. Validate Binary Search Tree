@@ -1,0 +1,97 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+ /**
+* 95. Validate Binary Search Tree
+* https://www.lintcode.com/problem/validate-binary-search-tree/description
+* pro:验证二叉树
+* tag: dfs tree
+* sol: root是不是大于左边最大值, 右边最小值. 而不是只验证 root和left还有right的关系
+* mis:  
+* fol:
+* oth:
+*/
+class ResultType {
+    boolean isBST = true;
+    int max = Integer.MIN_VALUE;
+    int min = Integer.MAX_VALUE;
+}
+public class Solution {
+    /**
+     * @param root: The root of binary tree.
+     * @return: True if the binary tree is BST, or false
+     *左节点小于祖先节点，而且最大值，小于节点
+     * 右节点大于祖先节点，而且最小值，大于节点
+     */
+    public boolean isValidBST(TreeNode root) {
+        // write your code here
+        // bst = left && right
+        if (root == null) {
+            return true;
+        }
+        
+        ResultType f1 = helper(root, root.left, -1);
+        ResultType f2 = helper(root, root.right, 1);
+        
+        System.out.println("final " + f1.isBST);
+        System.out.println("final " + f2.isBST);
+        
+        System.out.println("final " + f1.max);
+        System.out.println("final " + f2.min);
+        
+        // System.out.println("final " + f1.max);
+        // System.out.println("final " + f2.min);
+        
+        return f1.isBST && f2.isBST && root.val >= f1.max && root.val <= f2.min;
+    }
+    private ResultType helper(TreeNode root, TreeNode child, int pos) {
+        if (child == null) {
+            ResultType temp = new ResultType();
+            temp.max = root.val;
+            temp.min = root.val;
+            
+            return temp;
+            // return new ResultType();
+        }
+        ResultType rst = new ResultType();
+        boolean check_val;
+        boolean check_max;
+        
+        ResultType rst_left = helper(child, child.left, -1);
+        ResultType rst_right = helper(child, child.right, 1);
+        
+        if (pos == -1) {
+            check_val = root.val > child.val ? true: false;
+            check_max = root.val > rst_left.max ? true: false;
+            // System.out.println("left_1 " + root.val + " " + child.val);
+            // System.out.println(check_val);
+            // System.out.println(check_max);
+        } else {
+            check_val = root.val < child.val ? true: false;
+            check_max = root.val < rst_right.min ? true: false;
+            // System.out.println("right_1 " + root.val + " " + child.val);
+            // System.out.println(check_val);
+            // System.out.println(check_max);
+        }
+        System.out.println("?????!!!!!!!!!!!!!!!!!!! " );
+        rst.max = Math.max(root.val, rst_right.max);
+        rst.min = Math.min(root.val, rst_left.min);
+        // System.out.println("????? " + rst_right.max);
+        // System.out.println("????? " + rst_left.min);
+        // System.out.println("????? " + rst.min);
+        // System.out.println("????? " + rst.min);
+        rst.isBST = check_val && check_max && rst_left.isBST && rst_right.isBST;
+        // System.out.println("all_1 " + root.val + " " + child.val + rst.isBST);
+        // System.out.println("all_min " + root.val + " " + child.val + rst.min);
+        // System.out.println("all_max " + root.val + " " + child.val + rst.max);
+        return rst; 
+    }
+}
