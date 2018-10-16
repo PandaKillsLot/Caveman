@@ -1,0 +1,32 @@
+public class Solution {
+    /**
+     * @param prices: Given an integer array
+     * @return: Maximum profit
+     */
+/**
+* 149. Best Time to Buy and Sell Stock
+* https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock/description
+* pro: 只能买卖一次, 求最大值
+* tag: greedy
+* sol: 对买个当前值求前面的最小值, 差就是局部最优
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int maxProfit(int[] prices) {
+        // write your code here
+        if (prices == null || prices.length == 0){
+            return 0;
+        }
+        int min = Integer.MAX_VALUE;
+        int max = 0;
+        for (int i = 0; i < prices.length; i++){
+            min = Math.min(prices[i], min);
+            max = Math.max(prices[i] - min, max);
+        }
+        return max;
+    }
+}
