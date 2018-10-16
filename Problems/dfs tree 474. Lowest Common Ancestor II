@@ -1,0 +1,54 @@
+/**
+ * Definition of ParentTreeNode:
+ * 
+ * class ParentTreeNode {
+ *     public ParentTreeNode parent, left, right;
+ * }
+ */
+/**
+* 474. Lowest Common Ancestor II
+* https://www.lintcode.com/problem/lowest-common-ancestor-ii/description?_from=ladder&&fromId=1
+* pro:LCA 但是一定存在LCA, 带父节店
+* tag: dfs tree
+* sol: 1) 按照 lca做 2) 一个node的path全部记下来, 然后另一个一个边走一边比对map
+* mis:  
+* fol:
+* oth:
+*/
+
+
+public class Solution {
+    /*
+     * @param root: The root of the tree
+     * @param A: node in the tree
+     * @param B: node in the tree
+     * @return: The lowest common ancestor of A and B
+     */
+    public ParentTreeNode lowestCommonAncestorII(ParentTreeNode root, ParentTreeNode A, ParentTreeNode B) {
+        // write your code here
+        List<ParentTreeNode> fatherListA = new ArrayList<ParentTreeNode>();
+        List<ParentTreeNode> fatherListB = new ArrayList<ParentTreeNode>();
+        
+        backtrack(A, fatherListA);
+        backtrack(B, fatherListB);
+        
+        int pointerA = fatherListA.size() - 1;
+        int pointerB = fatherListB.size() - 1;
+        ParentTreeNode last = null;
+        
+        while (pointerA >= 0 && pointerB >= 0 
+            && fatherListA.get(pointerA) == fatherListB.get(pointerB)) {
+            last = fatherListA.get(pointerA);
+            pointerA--;
+            pointerB--;
+        }
+        return last;
+    }
+    private void backtrack(ParentTreeNode A, List<ParentTreeNode> fatherListA){
+        ParentTreeNode pointer = A;
+        while (pointer != null) {
+            fatherListA.add(pointer);
+            pointer = pointer.parent;
+        }
+    }
+}
