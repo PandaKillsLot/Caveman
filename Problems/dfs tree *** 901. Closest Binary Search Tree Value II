@@ -1,0 +1,111 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 901. Closest Binary Search Tree Value II
+* https://www.lintcode.com/problem/closest-binary-search-tree-value-ii/description?_from=ladder&&fromId=1
+* pro: 找k个最近的
+* tag: dfs tree bfs 
+* sol: 遍历查找, 两个stack一个存前继(小的), 一个存后继(大的), 开始遍历.
+* mis: 
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: the given BST
+     * @param target: the given target
+     * @param k: the given k
+     * @return: k values in the BST that are closest to the target
+     */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        
+        List<Integer> ans = new ArrayList<Integer>();
+        
+        Stack<TreeNode> prev_stack = new Stack<TreeNode>();
+        Stack<TreeNode> next_stack = new Stack<TreeNode>();
+        
+        TreeNode pointer = root;
+        while (pointer != null) {
+            if (pointer.val < target) {
+                prev_stack.push(pointer);
+                System.out.println("prev" + pointer.val);
+                pointer = pointer.right;
+            } else {
+                next_stack.push(pointer);
+                System.out.println("next" + pointer.val);
+                pointer = pointer.left;
+            }
+        }
+        
+       
+        while (ans.size() < k) {
+            
+            double prev = prev_stack.isEmpty() ? 
+                Integer.MAX_VALUE : target - prev_stack.peek().val;
+            double next = next_stack.isEmpty() ? 
+                Integer.MAX_VALUE : next_stack.peek().val - target;
+                
+            if (prev < next) {
+                // order
+                ans.add(0, prev_stack.peek().val);
+                System.out.println("add prev " + prev_stack.peek().val);
+                getPredecessor(prev_stack);
+            } else {
+                ans.add(next_stack.peek().val);
+                System.out.println("add next " + next_stack.peek().val);
+                getSuccessor(next_stack);
+            }
+        }
+        return ans;
+    }
+    private void getPredecessor(Stack<TreeNode> prev_stack){
+        TreeNode prev =  prev_stack.pop().left;
+      
+        while (prev != null) {
+            prev_stack.push(prev);
+           
+            //prev = prev.left;
+            prev = prev.right;
+        }
+    }
+    private void getSuccessor(Stack<TreeNode> next_stack){
+        TreeNode next =  next_stack.pop().right;
+      
+        while (next != null) {
+            next_stack.push(next);
+            //next = next.right;
+            next = next.left;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
