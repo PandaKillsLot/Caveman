@@ -1,0 +1,55 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 88. Lowest Common Ancestor of a Binary Tree
+* https://www.lintcode.com/problem/lowest-common-ancestor-of-a-binary-tree/description
+* pro:LCA 但是一定存在LCA
+* tag: dfs tree
+* sol: 分治, 如果遇到任意一个就可以推出比较, 比如, left != null right === null就可以返回left, right一定在left 下面
+* mis:  
+* fol:
+* oth:
+*/
+
+public class Solution {
+    /*
+     * @param root: The root of the binary search tree.
+     * @param A: A TreeNode in a Binary.
+     * @param B: A TreeNode in a Binary.
+     * @return: Return the least common ancestor(LCA) of the two nodes.
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode A, TreeNode B) {
+        // write your code here
+        if (root == null || root.val == A.val || root.val == B.val){
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, A, B);
+        TreeNode right = lowestCommonAncestor(root.right, A, B);
+        
+        if (left != null && right != null) {
+            return root;
+        }
+        
+        if (left != null) {
+            return left;
+        }
+        
+        if (right != null) {
+            return right;
+        }
+        return null;
+    }
+}
+
+
+
+
