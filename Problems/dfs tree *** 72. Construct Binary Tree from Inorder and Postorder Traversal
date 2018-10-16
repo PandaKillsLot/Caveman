@@ -1,0 +1,70 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 72. Construct Binary Tree from Inorder and Postorder Traversal
+* https://www.lintcode.com/problem/construct-binary-tree-from-inorder-and-postorder-traversal/description
+* pro: 给你一个inorder数组, 一个postorder数组, 求一个bt
+* tag: dfs tree
+* sol: postorder知道根的位置, 从inorder里可以知道左右子树大小,就可以一直搞基下去了
+* mis:  不要用绝对位置, 而应该用距离表示(end - start + 1) 
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param inorder: A list of integers that inorder traversal of a tree
+     * @param postorder: A list of integers that postorder traversal of a tree
+     * @return: Root of a tree
+     */
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        // corner case
+        if (inorder == null || postorder == null ) {
+            return null;
+        }
+        if (inorder.length != postorder.length || inorder.length == 0) {
+            return null;
+        }
+        //
+        return buildTreeHelper(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+    }
+    private int findPosition(int[] inorder, int val){
+        for (int i = 0; i < inorder.length; i++) {
+            if (inorder[i] == val) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private TreeNode buildTreeHelper(int[] inorder, int instart, int inend
+                                    , int[] postorder, int poststart, int postend){
+        if (instart > inend) {
+            return null;
+        }
+        TreeNode root = new TreeNode(postorder[postend]);
+        int rootPosition = findPosition(inorder, postorder[postend]);
+       /*
+       因为inorder是 左根右，postorder是左右根
+       那么原postorder的最后一个元素就是根，然后我们通过根元素，找到了根在inorder中的位置为postion。
+       那么左的inorder范围是[instart, position - 1] 所以长度为 position - instart。
+       再回过头来看,postorder是左右根。已知左的长度position
+       -instart，和起始点poststart，所以left的post的range是[poststart, poststart + position - instart - 1]。
+       因为是左右根，所以right的post order紧挨着left，则起始点为poststart + position -instart然后把最后一个根元素踢出，则结束位置为postend。最终范围是[poststart + position - instart, postend - 1]
+       */
+        
+        root.left = buildTreeHelper(inorder, instart,rootPosition - 1
+                                    , postorder, poststart , poststart + (rootPosition - 1 - instart));
+        // - 1
+        root.right = buildTreeHelper(inorder, rootPosition + 1, inend
+                                    , postorder, poststart + rootPosition - instart, postend - 1);
+        return root;
+    }
+}
