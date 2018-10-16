@@ -1,0 +1,54 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+/**
+* 480. Binary Tree Paths
+* https://www.lintcode.com/problem/binary-tree-paths/description?_from=ladder&&fromId=1
+* pro: 打印二叉树的路径
+* tag: dfs tree
+* sol: 分治, 或者遍历
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /*
+     * @param root: the root of the binary tree
+     * @return: all root-to-leaf paths
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        // write your code here
+        ArrayList<String> answer = new ArrayList<>();
+        //1. 递归定义： 返回全部的path 
+        //2. 递归出口
+        if (root == null) {
+            return answer;
+        }
+        // 必须要考虑递归在最初的时候是怎么加上去的
+        if (root.left == null && root.right == null) {
+            answer.add(String.valueOf(root.val));
+            return answer;
+        }
+        //3. 递归拆分
+        List<String> leftPaths = binaryTreePaths(root.left);
+        List<String> rightPaths = binaryTreePaths(root.right);
+        
+        // 注意每次集合名字的单复数
+        for (String path : leftPaths) {
+            answer.add(root.val + "->" + path);
+        }
+         for (String path : rightPaths) {
+            answer.add(root.val + "->" + path);
+        }
+        
+        return answer;
+    }
+}
