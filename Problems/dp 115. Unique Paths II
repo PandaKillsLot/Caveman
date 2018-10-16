@@ -1,0 +1,70 @@
+public class Solution {
+    /**
+     * @param obstacleGrid: A list of lists of integers
+     * @return: An integer
+     */
+/**
+* 115. Unique Paths II
+* https://www.lintcode.com/problem/unique-paths-ii/description
+* pro: 从上走到下有几种走法
+* tag: dp 
+* sol: 114变种, 有栅栏, 有栅栏就清零
+*      ① dp[i][j] = 走到这个坐标有几种走法
+*      ② dp[i][j] = 上面过来的过着下面过来的
+*      ③ 初始化: 0
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        // write your code here
+        int row = obstacleGrid.length;
+        int col = obstacleGrid[0].length; 
+        int[][] ans = new int[row][col];
+        if (obstacleGrid[0][0] == 1) {
+            return 0;
+        }
+        
+        
+        
+        
+        boolean isBlocked = false;
+        
+        for(int i = 0; i < col; i++) {
+            if(obstacleGrid[0][i] == 1){
+                isBlocked = true;
+            }
+            if (isBlocked) {
+                 ans[0][i] = 0;
+            } else {
+                 ans[0][i] = 1;
+            }
+           
+        }
+        // mistake : forget to reset
+        isBlocked = false;
+        for(int i = 0; i < row; i++) {
+            if(obstacleGrid[i][0] == 1){
+                isBlocked = true;
+            }
+            if (isBlocked) {
+                 ans[i][0] = 0;
+            } else {
+                ans[i][0] = 1;
+            }
+        }
+        
+        for(int i = 1; i < row; i++) {
+             for(int j = 1;j < col; j++) {
+                ans[i][j] = obstacleGrid[i][j] == 0 ? ans[i - 1][j] + ans[i][j - 1] : 0;         
+             }
+        }
+        
+        return ans[row - 1][col - 1];
+    }
+}
