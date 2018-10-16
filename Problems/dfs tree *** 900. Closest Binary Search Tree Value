@@ -1,0 +1,93 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ * 
+ * BST的实质，是个有序数组--》有序数组求target--》 二分夹记 找区间
+ * BST中，离开BST最近的数，一定在寻找的区间里（二分法），上界和下界也在。 但是第二，第三的数，却未必在区间里--》 数组是离散的
+ * {100,40,101,30,70} 寻找轨迹： 100,40,70。 上限，下线，最近的都在，但是最近的第二个却是101，在搜索区间外
+ */
+/**
+* 900. Closest Binary Search Tree Value
+* https://www.lintcode.com/problem/closest-binary-search-tree-value/description
+* pro:bst找最近的数
+* tag: dfs tree bfs 
+* sol: 找upper和lower夹记, bsrt找一次, 只能找到一个比你小/大的, 最近的
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: the given BST
+     * @param target: the given target
+     * @return: the value in the BST that is closest to the target
+     * 这是最标准，也是比较难懂的一种做法，另外一种做法是在夹记这个数的时候，小的就是lower，高的就是upper，一次遍历，迭代来做
+     */
+    public int closestValue(TreeNode root, double target) {
+        if (root == null) {
+            return 0;
+        }
+        
+        TreeNode lowerNode = lowerBound(root, target);
+        TreeNode upperNode = upperBound(root, target);
+        
+        if (lowerNode == null) {
+            return upperNode.val;
+        }
+        
+        if (upperNode == null) {
+            return lowerNode.val;
+        }
+        
+        if (target - lowerNode.val > upperNode.val - target) {
+            return upperNode.val;
+        }
+        
+        return lowerNode.val;
+    }
+    
+    // find the node with the largest value that smaller than target
+    private TreeNode lowerBound(TreeNode root, double target) {
+        if (root == null) {
+            return null;
+        }
+        System.out.println(root.val);
+        while (root != null && root.val >= target) {
+            root = root.left;
+        }
+        // need to check
+        if (root == null) {
+            return null;
+        }
+        TreeNode node = lowerBound(root.right, target);
+        if (node != null) {
+            return node;
+        }
+        return root;
+    }
+    
+    // find the node with the smallest value that larger than or equal to target
+    private TreeNode upperBound(TreeNode root, double target) {
+        if (root == null) {
+            return null;
+        }
+       
+        if (root.val < target) {
+            return upperBound(root.right, target);
+        }
+        
+        TreeNode lastNode = upperBound(root.left, target);
+        if (lastNode != null){
+            return lastNode;
+        }
+       
+        return root;
+    }
+}
