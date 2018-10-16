@@ -1,0 +1,89 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+// 树木的dfs奥义, 查水表大法
+
+/**
+* 614. Binary Tree Longest Consecutive Sequence II
+* https://www.lintcode.com/problem/binary-tree-longest-consecutive-sequence-ii/description
+* pro: 连续, 最长路径, leaf to leaf
+* tag: dfs
+* sol: 分治查户口
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: the root of binary tree
+     * @return: the length of the longest consecutive sequence path
+     */
+    // 尼玛要返回的有
+    // 顺序的多长
+    // 逆序的多长
+    class ResultType{
+        int up;
+        int down;
+        int max;
+        public ResultType(int up, int down, int max){
+            this.up = up;
+            this.down = down;
+            this.max = max;
+        }
+    }
+    
+    public int longestConsecutive2(TreeNode root) {
+        // write your code here
+        return helper(root).max;
+    }
+    private ResultType helper(TreeNode root){
+        if (root == null){
+            return new ResultType(0, 0, 0);
+        }
+        
+        ResultType left = helper(root.left);
+        ResultType right = helper(root.right);
+        // 返回的是从这个节点开始的递增序列
+        int up = 1;
+        int down = 1;
+        // 最大值可能是, 左/右边不过root的最大path
+        // 当前的单调上升/下降path
+        // 当前的过左右root的通路
+        int max = Math.max(left.max, right.max);
+        
+        if (left.max != 0){
+            // 从根节点往上递增 up
+            if (root.left.val == root.val - 1){
+                up = Math.max(left.up + 1, up);
+            } else if (root.left.val == root.val + 1){
+                down = Math.max(left.down + 1, down);
+            }
+        }
+        if (right.max != 0){
+            if (root.right.val == root.val - 1){
+                up = Math.max(right.up + 1, up);
+            } else if (root.right.val == root.val + 1){
+                down = Math.max(right.down + 1, down);
+            }
+        }
+        //max = Math.max(max, Math.max(up, down));
+        max  = Math.max(max, up + down - 1);
+        // if (left.max != 0 && right.max != 0){
+        //     if (root.left.val + 1 == root.val && root.right.val - 1 == root.val){
+        //         max = Math.max(max, left.up + 1 + right.down);
+        //     } else if (root.left.val - 1 == root.val && root.right.val + 1 == root.val){
+        //         max = Math.max(max, left.down + 1 + right.up);
+        //     }
+        // }
+        
+        return new ResultType(up, down, max);
+    }
+}
