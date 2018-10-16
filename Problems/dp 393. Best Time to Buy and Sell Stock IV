@@ -1,0 +1,134 @@
+public class Solution {
+    /**
+     * @param K: An integer
+     * @param prices: An integer array
+     * @return: Maximum profit
+     */
+/**
+* 393. Best Time to Buy and Sell Stock IV
+* https://www.lintcode.com/problem/best-time-to-buy-and-sell-stock-iv/description
+* pro: 只能买卖k次, 问最大获益
+* tag: dp 
+* sol: k 大于 days一般, 无限次.买卖k次, 2k + 1个状态
+*      ① dp[i][j] = i天j状态的值
+*       ()
+*      ② dp[i][j] = (卖出)  dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i -2]);             (买入)dp[i][j] = Math.max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i][j]);  
+*      ③ 初始化: 
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int maxProfit(int K, int[] prices) {
+        // write your code here
+        if (K <= 0 || prices.length == 0){
+            return 0;
+        }
+        int len = prices.length;
+        if ((len % 2 == 0 && K >= len / 2) || (len % 2 == 1 && K >= len / 2 + 1)){
+            return maxProfitI(prices);
+        } else {
+            return maxProfitII(prices, K);
+        }
+    }
+    public int maxProfitI(int[] prices) {
+        // write your code here
+        // 抓住每一个波动, 而不是唯一的最大点
+        int sum = 0;
+        for (int i = 1; i < prices.length; i++) {
+            int profit = prices[i] - prices[i - 1];
+            if (profit > 0){
+                sum += profit;
+            }
+        }
+        return sum;
+    }
+    public int maxProfitII(int[] prices, int k) {
+        // write your code here
+        if (prices == null || prices.length == 0){
+            return 0;
+        }
+        //int k = 2;
+        int status = k * 2 + 1;
+        int n = prices.length;
+        // 2 - 4 - 5
+        // 3 - 6 - 1
+        int[][] dp = new int[n + 1][status + 1];
+        
+        for (int i = 2; i <= status; i++){
+            dp[0][i] = Integer.MIN_VALUE;
+        }
+        // 0 1 2 3 4 5
+        // 0 0 x x x x
+        for (int i = 1; i <= n; i++){
+            // // current clear
+            // for (int j = 1; j <= 5; j += 2){
+            //     // 昨天也没有股票, 继续不入室 || 昨天有, 今天卖出
+                
+            //     dp[i][j] = dp[i - 1][j];
+            //     if (j > 1 && i > 1 && dp[i - 1][j - 1] != Integer.MIN_VALUE){
+            //         dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i - 2]);  
+            //     }
+                
+            // }
+ 
+           
+            for (int j = 1; j <= status; j += 2){
+                dp[i][j] = dp[i - 1][j];// keep hold zero
+                //  卖出至少是第二天// dp[i - 1][j - 1]上一个交易有股票可以卖出
+                // mistake! j 必须大于 1, choice one 退出个P
+                if (j > 1 && i > 1 && dp[i - 1][j - 1] != Integer.MIN_VALUE){
+                    dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - 1] + prices[i - 1] - prices[i -2]);
+                }
+               
+            }
+           
+            // for (int j = 2; j <= 5; j += 2){
+            //     dp[i][j] = dp[i - 1][j - 1];// buy today
+            //     //  卖出至少是第二天// dp[i - 1][j - 1]上一个交易有股票可以卖出
+            //     if (i > 1 && dp[i - 1][j] != Integer.MIN_VALUE){// 持续持有才会溢出
+            //         dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + prices[i - 1] - prices[i -2]);
+            //     }
+               
+            // }
+                        for (int j = 2; j <= status; j += 2){
+                // 昨天有股票, 继续持有(总资产浮动) || 昨天没有股票, 今天买入(总资产暂时不变) 
+                dp[i][j] = dp[i - 1][j - 1];
+                if (j > 1 && i > 1 && dp[i - 1][j] != Integer.MIN_VALUE){
+                    dp[i][j] = Math.max(dp[i - 1][j] + prices[i - 1] - prices[i - 2], dp[i][j]);  
+                }
+                
+            }  
+            
+        }
+        // for (int i = 0; i <= n; i++){
+        //     // current clear
+           
+        //     for (int j = 0; j <= 5; j += 1){
+        //         //dp[i][j] = dp[i][j - 1];// keep hold zero
+        //         System.out.print(" " + dp[i][j]);
+               
+        //     }
+        //     System.out.println(" ");
+            
+        // }
+        
+
+            int max = 0;
+            for (int j = 0; j <= status; j += 1){
+                //dp[i][j] = dp[i][j - 1];// keep hold zero
+                max = Math.max(dp[n][j], max);
+               
+            }
+    
+            
+        
+        return max;
+        //return Math.max(Math.max(dp[n][1], dp[n][3]), dp[n][5]);
+        
+    }
+}
