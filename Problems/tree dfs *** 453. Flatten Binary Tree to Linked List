@@ -1,0 +1,65 @@
+/**
+ * Definition of TreeNode:
+ * public class TreeNode {
+ *     public int val;
+ *     public TreeNode left, right;
+ *     public TreeNode(int val) {
+ *         this.val = val;
+ *         this.left = this.right = null;
+ *     }
+ * }
+ */
+//变量名要有足够区分度，不然容易坑自己
+/**
+* 453. Flatten Binary Tree to Linked List
+* https://www.lintcode.com/problem/flatten-binary-tree-to-linked-list/description?_from=ladder&&fromId=1
+* pro:把tree翻转成list
+* tag: dfs tree
+* sol: 1) 两个链表拼接, 每个子链表的头和尾巴都要,  Ahead 用于 return, Atail.next = Bhead, Btail 是下一个拼接点
+*      2)左右翻转
+* mis:  
+* fol:
+* oth:
+*/
+public class Solution {
+    /**
+     * @param root: a TreeNode, the root of the binary tree
+     * @return: nothing
+     */
+    
+    public void flatten(TreeNode root) {
+        // write your code here
+        if (root == null) {
+            return;        
+        }
+        helper(root);
+    }
+    // return the last point to connect
+    private TreeNode helper(TreeNode root){
+        if (root == null) {
+            return null;
+        }
+        // connection point 
+        TreeNode left_last = helper(root.left);
+        TreeNode right_last = helper(root.right);
+        // 左右都是空
+        if (left_last == null && right_last == null) {
+            return root;
+        }
+        // 左边空, 美滋滋
+        if (left_last == null) {
+            return right_last;
+        }
+        // 右边空, 翻转下
+        if (right_last == null) {
+            root.right = root.left;
+            root.left = null;
+            return left_last;
+        }
+        // 拼接, 翻转, 删除
+        left_last.right = root.right;
+        root.right = root.left;
+        root.left = null;
+        return right_last;
+    }
+}
