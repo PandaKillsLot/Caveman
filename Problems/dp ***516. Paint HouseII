@@ -1,0 +1,112 @@
+public class Solution {
+    /*
+     * @param costs: n x k cost matrix
+     * @return: an integer, the minimum cost to paint all houses
+     */
+    /**
+* 516. Paint HouseII
+* https://www.lintcode.com/problem/paint-house/description
+* pro: 房子相邻颜色不一样, 造价不一样, K 种问最后价格
+* tag: dp 
+* sol: 各种方案算一遍, 记下来
+*      小优化 : 算k个的最小值, 算第一小和第二小就足够了,不是第一小,就是第二小
+*      ① dp[i][j] = 当前i房涂j的区别
+*      ② dp[i][j] = min {dp[i - 1][1..j]}
+*      ③ 初始化: 
+*      ④ 计算顺序:n
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int minCostII(int[][] costs) {
+        if (costs == null || costs.length == 0) {
+            return 0;
+        }
+        if (costs[0] == null || costs[0].length == 0) {
+            return 0;
+        }
+        int n = costs.length;
+        int k = costs[0].length;
+        
+        int[][] ans = new int[n + 1][k];
+        // for (int i = 0; i < k; i++) {
+        //     ans[0][i] = costs[0][i];
+        // }
+        for (int i = 1; i <= n; i++) {
+            // 经典错误, 极值用最数组里的数, 导致min2 复制失败
+            
+            //int minOne = costs[i - 1][0];
+            int minOne = Integer.MAX_VALUE;
+            int indexOne = -1;
+            //int minTwo = costs[i - 1][1];
+            int minTwo = Integer.MAX_VALUE;
+            int indexTwo = -1;
+            
+            
+            
+            for (int j = 0; j < k; j++) {
+                // 始终递减你就跪了 
+                // if (ans[i - 1][j] < minOne){
+                //     minOne = ans[i - 1][j];
+                //     indexOne = j;
+                // } else if (ans[i - 1][j] < minTwo){
+                //     minTwo = ans[i - 1][j];
+                //     indexTwo = j;
+                // }
+                
+                if (indexOne== - 1 || ans[i - 1][j] < minOne){
+                    indexTwo = indexOne;
+                    minTwo = minOne;
+                    
+                    minOne = ans[i - 1][j];
+                    indexOne = j;
+                } else if (indexTwo == - 1 || ans[i - 1][j] < minTwo){
+                    minTwo = ans[i - 1][j];
+                    indexTwo = j;
+                }
+            }
+            
+            
+            // System.out.println( " index 1 " + indexOne);
+            // System.out.println( " index 2 " + indexTwo);
+            
+            
+            for (int j = 0; j < k; j++) {
+                int min = j == indexOne ? minTwo : minOne;
+                ans[i][j] = costs[i - 1][j] + min;
+            }
+        }
+        
+        // for (int i = 1; i <= n; i++) {
+
+        //     for (int j = 0; j < k; j++) {
+        //         System.out.print(ans[i][j] + " -- ");
+                
+        //     }
+        //     System.out.println(" ");
+
+        // }
+        int min = Integer.MAX_VALUE;
+        for (int j = 0; j < k; j++) {
+            //System.out.print(ans[n][j] + " -- ");
+            if (ans[n][j] < min) {
+                min = ans[n][j];
+                
+            }
+        }
+        return min;
+    }
+    // public int minValue(int col, int row, int[][] array) {
+    //     int min = Integer.MAX_VALUE;
+    //     for (int j = 0; j < array[0].length; j++) {
+    //         if (array[row][j] < min && j != col) {
+    //             min = array[row][j];
+    //         }
+    //     }
+    //     return min;
+    // }
+}
