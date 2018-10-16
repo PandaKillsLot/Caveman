@@ -1,0 +1,54 @@
+public class Solution {
+    /*
+     * @param : A string
+     * @param : A string
+     * @return: Count the number of distinct subsequences
+     */
+/**
+* 118. Distinct Subsequences
+* https://www.lintcode.com/problem/distinct-subsequences/description
+* pro:求target字符串在source里的出现次数
+* tag: dp 双序列
+* sol: 二维数组双序列
+*      ① dp[i][j] = 以t的j为结尾在dp i里面出现了几次
+                    // t在t的s[j- 1]里出现次数, t[i]和s[j]匹配, 那么看[i - 1][j - 1]匹配了几个
+*      ② dp[i][j] = dp[i][j - 1] + dp[i - 1][j - 1]||t[i] == s[j]
+*      ③ 初始化 : 第一行必须是0, 空串是都是1
+*      ④ 计算顺序
+* 
+*      Space O()
+*      Time  O()
+* 
+* mis:  
+* fol:
+* oth:
+*/
+    public int numDistinct(String S, String T) {
+        // write your code here
+        if (S == null || T == null){
+            return 0;
+        }
+        int m = S.length();
+        int n = T.length();
+        
+        int[][] dp = new int[m + 1][n + 1];
+        // dp[i][j] 在ij里, 有多少个distinct
+        for (int i = 0; i <= m; i++){
+            for (int j = 0; j <= n; j++){
+                if (j == 0){
+                    dp[i][j] = 1;
+                    continue;
+                } else if (i == 0){
+                    dp[i][j] = 0;
+                    continue;
+                }
+                dp[i][j] = dp[i - 1][j];
+                if (S.charAt(i - 1) == T.charAt(j - 1)){
+                    dp[i][j] += dp[i - 1][j - 1]; 
+                }
+            }    
+        }
+        
+        return dp[m][n];
+    }
+};
