@@ -1,4 +1,4 @@
-    int a = 7;  
+    		int a = 7;  
 		char b = (char)a; 
 		//char c = (char)a + '0';
 		char d = (char)(a + '0');
@@ -9,3 +9,9 @@
 		System.out.println(d); // 7
 		System.out.println(Character.valueOf((char) a)); // 
 		System.out.println(Character.forDigit(a, 10)); // 7
+		
+		
+		
+		sdwe1
+		1
+		1还有个好笑的问题, 如果 a是 56怎么转呢? 傻比, 转不了, char哪有两位的
